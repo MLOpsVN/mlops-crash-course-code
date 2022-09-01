@@ -29,3 +29,9 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+
+  kafka_events:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kafka_events
