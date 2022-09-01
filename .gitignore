@@ -128,4 +128,11 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-.vscode/
+# Common
+.vscode
+bin
+tmp
+
+# Training code
+training/data
+training/model
