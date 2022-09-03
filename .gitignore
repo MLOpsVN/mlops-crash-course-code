@@ -132,6 +132,7 @@ dmypy.json
 .vscode
 bin
 tmp
+mlruns
 
 # Training code
 training/data
