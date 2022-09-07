@@ -5,7 +5,7 @@ import pendulum
 from airflow import DAG
 from airflow.providers.docker.operators.docker import DockerOperator
 
-DATA_PIPELINE_TAG = "0.0.1"
+DATA_PIPELINE_TAG = "latest"
 
 with DAG(
     dag_id='materlize_offline_to_online',
@@ -18,7 +18,5 @@ with DAG(
         image=f'dangvanquan25/data-pipeline:{DATA_PIPELINE_TAG}',
         api_version='auto',
         auto_remove=True,
-        command="cd scripts/materlize_offline_to_online && bash materialize.sh",
-        docker_url="unix://var/run/docker.sock",
-        network_mode="bridge"
+        command="/bin/bash -c 'chmod +x ./scripts/materlize_offline_to_online/materialize.sh'",
     )

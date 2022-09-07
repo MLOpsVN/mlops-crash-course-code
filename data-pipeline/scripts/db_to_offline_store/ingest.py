@@ -1,9 +1,14 @@
 import sys
-sys.path.append("..")
-import utils
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
+
+from utils import logger
+my_logger = logger.get_logger()
 
 def main():
-    utils.logger.info("Ingesting ...")
+    my_logger.info("Ingesting...")
 
 if __name__ == "__main__":
     main()

@@ -1,2 +1,2 @@
-pyspark==3.3.0
+pyspark==3.0.1
 feast[redis]==0.24.0

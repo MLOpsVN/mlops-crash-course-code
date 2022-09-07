@@ -3,7 +3,7 @@ import pendulum
 from airflow import DAG
 from airflow.providers.docker.operators.docker import DockerOperator
 
-DATA_PIPELINE_TAG = "0.0.1"
+DATA_PIPELINE_TAG = "latest"
 
 with DAG(
     dag_id='db_to_offline_store',
@@ -16,9 +16,7 @@ with DAG(
         image=f'dangvanquan25/data-pipeline:{DATA_PIPELINE_TAG}',
         api_version='auto',
         auto_remove=True,
-        command="cd scripts/db_to_offline_store && python ingest.py",
-        docker_url="unix://var/run/docker.sock",
-        network_mode="bridge"
+        command="/bin/bash -c 'cd scripts/db_to_offline_store && python ingest.py'",
     )
 
     clean_task = DockerOperator(
@@ -26,9 +24,7 @@ with DAG(
         image=f'dangvanquan25/data-pipeline:{DATA_PIPELINE_TAG}',
         api_version='auto',
         auto_remove=True,
-        command="cd scripts/db_to_offline_store && python clean.py",
-        docker_url="unix://var/run/docker.sock",
-        network_mode="bridge"
+        command="/bin/bash -c 'cd scripts/db_to_offline_store && python clean.py'",
     )
 
     explore_and_validate_task = DockerOperator(
@@ -36,9 +32,7 @@ with DAG(
         image=f'dangvanquan25/data-pipeline:{DATA_PIPELINE_TAG}',
         api_version='auto',
         auto_remove=True,
-        command="cd scripts/db_to_offline_store && python explore_and_validate.py",
-        docker_url="unix://var/run/docker.sock",
-        network_mode="bridge"
+        command="/bin/bash -c 'cd scripts/db_to_offline_store && python explore_and_validate.py'",
     )
 
     ingest_task >> clean_task >> explore_and_validate_task
