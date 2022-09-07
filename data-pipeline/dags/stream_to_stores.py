@@ -1,9 +1,9 @@
-import datetime
-
 import pendulum
 
 from airflow import DAG
 from airflow.providers.docker.operators.docker import DockerOperator
+
+DATA_PIPELINE_TAG = "0.0.1"
 
 with DAG(
     dag_id='stream_to_stores',
@@ -12,8 +12,8 @@ with DAG(
     catchup=False,
 ) as dag:
     stream_to_online_task = DockerOperator(
-        task_id='docker_command',
-        image='centos:latest',
+        task_id='stream_to_online_task',
+        image=f'dangvanquan25/data-pipeline:{DATA_PIPELINE_TAG}',
         api_version='auto',
         auto_remove=True,
         command="cd scripts/stream_to_stores && python ingest.py --store online",
@@ -22,8 +22,8 @@ with DAG(
     )
 
     stream_to_offline_task = DockerOperator(
-        task_id='docker_command',
-        image='centos:latest',
+        task_id='stream_to_offline_task',
+        image=f'dangvanquan25/data-pipeline:{DATA_PIPELINE_TAG}',
         api_version='auto',
         auto_remove=True,
         command="cd scripts/stream_to_stores && python ingest.py --store offline",
@@ -32,8 +32,8 @@ with DAG(
     )
 
     stop_stream_task = DockerOperator(
-        task_id='docker_command',
-        image='centos:latest',
+        task_id='stop_stream_task',
+        image=f'dangvanquan25/data-pipeline:{DATA_PIPELINE_TAG}',
         api_version='auto',
         auto_remove=True,
         command="cd scripts/stream_to_stores && python ingest.py --mode teardown",

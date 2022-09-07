@@ -1,9 +1,9 @@
-import datetime
-
 import pendulum
 
 from airflow import DAG
 from airflow.providers.docker.operators.docker import DockerOperator
+
+DATA_PIPELINE_TAG = "0.0.1"
 
 with DAG(
     dag_id='db_to_offline_store',
@@ -12,8 +12,8 @@ with DAG(
     catchup=False,
 ) as dag:
     ingest_task = DockerOperator(
-        task_id='docker_command',
-        image='centos:latest',
+        task_id='ingest_task',
+        image=f'dangvanquan25/data-pipeline:{DATA_PIPELINE_TAG}',
         api_version='auto',
         auto_remove=True,
         command="cd scripts/db_to_offline_store && python ingest.py",
@@ -22,8 +22,8 @@ with DAG(
     )
 
     clean_task = DockerOperator(
-        task_id='docker_command',
-        image='centos:latest',
+        task_id='clean_task',
+        image=f'dangvanquan25/data-pipeline:{DATA_PIPELINE_TAG}',
         api_version='auto',
         auto_remove=True,
         command="cd scripts/db_to_offline_store && python clean.py",
@@ -32,8 +32,8 @@ with DAG(
     )
 
     explore_and_validate_task = DockerOperator(
-        task_id='docker_command',
-        image='centos:latest',
+        task_id='explore_and_validate_task',
+        image=f'dangvanquan25/data-pipeline:{DATA_PIPELINE_TAG}',
         api_version='auto',
         auto_remove=True,
         command="cd scripts/db_to_offline_store && python explore_and_validate.py",

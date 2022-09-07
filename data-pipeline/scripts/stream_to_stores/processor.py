@@ -13,7 +13,7 @@ os.environ['PYSPARK_SUBMIT_ARGS'] = "--packages=org.apache.spark:spark-sql-kafka
 spark = SparkSession.builder.master("local").appName("feast-spark").getOrCreate()
 spark.conf.set("spark.sql.shuffle.partitions", 5)
 
-store = FeatureStore(repo_path=".")
+store = FeatureStore(repo_path="../../feature_repo")
 
 def preprocess_fn(rows: pd.DataFrame):
     print(f"df columns: {rows.columns}")
