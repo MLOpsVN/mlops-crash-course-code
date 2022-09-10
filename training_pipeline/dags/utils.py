@@ -6,9 +6,8 @@ from docker.types import Mount
 
 
 class AppPath:
-    ROOT = Path(Variable.get("ROOT_DIR"))
-    ARTIFACTS = ROOT / "artifacts"
-    FEATURE_STORE_ROOT = Path(Variable.get("FEATURE_STORE_ROOT_DIR"))
+    TRAINING_PIPELINE_DIR = Path(Variable.get("TRAINING_PIPELINE_DIR"))
+    FEATURE_REPO = TRAINING_PIPELINE_DIR / "feature_repo"
 
 
 class DefaultConfig:
@@ -19,20 +18,14 @@ class DefaultConfig:
     }
 
     DEFAULT_DOCKER_OPERATOR_ARGS = {
-        "image": "mlopsvn/training_pipeline:latest",
+        "image": "mlopsvn/mlops_crash_course/training_pipeline:latest",
         "api_version": "auto",
         "auto_remove": True,
         "mounts": [
-            # artifacts
+            # feature repo
             Mount(
-                source=AppPath.ARTIFACTS.as_posix(),
-                target="/training_pipeline/artifacts",
-                type="bind",
-            ),
-            # feature store
-            Mount(
-                source=AppPath.FEATURE_STORE_ROOT.as_posix(),
-                target="/training_pipeline/feature_store",
+                source=AppPath.FEATURE_REPO.absolute().as_posix(),
+                target="/training_pipeline/feature_repo",
                 type="bind",
             ),
         ],

@@ -5,7 +5,7 @@ cmd=$1
 # constants
 DOCKER_USER="$DOCKER_USER"
 PROJECT="mlops_crash_course"
-IMAGE_NAME="data_pipeline"
+IMAGE_NAME="training_pipeline"
 IMAGE_TAG=$(git describe --always)
 
 if [[ -z "$DOCKER_USER" ]]; then
@@ -44,11 +44,6 @@ deploy_dags() {
     cp dags/* "$dags_dir"
 }
 
-deploy_feature_repo() {
-    rsync -avr data_sources ../training_pipeline
-    rsync -avr feature_repo ../training_pipeline --exclude registry
-}
-
 shift
 
 case $cmd in
@@ -64,9 +59,6 @@ build_push)
     ;;
 dags)
     deploy_dags "$@"
-    ;;
-feature_repo)
-    deploy_feature_repo "$@"
     ;;
 *)
     echo -n "Unknown command: $cmd"

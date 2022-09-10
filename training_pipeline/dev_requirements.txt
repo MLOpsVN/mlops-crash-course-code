@@ -1,4 +1,4 @@
-# pip install "apache-airflow[celery]==2.3.4" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.3.4/constraints-3.7.txt"
+apache-airflow==2.3.4
 apache-airflow-providers-docker==3.1.0
 black==22.6.0
 jupyterlab==3.4.5
@@ -6,4 +6,5 @@ pandas==1.4.4
 fastparquet==0.8.3
 scikit-learn==1.1.2
 mlflow==1.28.0
-feast==0.24.1
+feast[redis]==0.24.0
+pyspark==3.0.1

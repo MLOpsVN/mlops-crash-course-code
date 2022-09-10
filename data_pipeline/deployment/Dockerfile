@@ -4,7 +4,7 @@ RUN apt-get update
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-COPY requirements.txt .
+COPY deployment/requirements.txt .
 RUN pip install -r requirements.txt
 
 FROM python:3.8-slim

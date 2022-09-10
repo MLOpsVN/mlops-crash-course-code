@@ -140,3 +140,5 @@ run_env
 
 # Training code
 training_pipeline/nbs/model
+training_pipeline/data_sources
+training_pipeline/feature_repo

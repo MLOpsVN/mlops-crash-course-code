@@ -15,3 +15,6 @@ build_push_image:
 
 deploy_dags:
 	source ${ENV_FILE} && bash deployment/deploy.sh dags "${DAGS_DIR}"
+
+deploy_feature_repo:
+	source ${ENV_FILE} && bash deployment/deploy.sh feature_repo

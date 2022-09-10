@@ -2,6 +2,5 @@
 __pycache__
 dev_requirements.txt
 nbs
-# data
 dags
-deployment
+feature_repo

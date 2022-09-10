@@ -19,7 +19,7 @@ def extract_data():
     Log().log.info(f"current dir: {cwd}")
     inspect_dir(cwd)
 
-    inspect_dir(AppPath.FEATURE_STORE_ROOT)
+    inspect_dir(AppPath.FEATURE_REPO)
 
     # Load driver order data
     orders = pd.read_csv(AppPath.DATA / "driver_orders.csv", sep="\t")

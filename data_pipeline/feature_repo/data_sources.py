@@ -5,18 +5,12 @@ from pathlib import Path
 from feast import FileSource, KafkaSource
 from feast.data_format import JsonFormat, ParquetFormat
 
-FEATURE_STORE_DIR_ENV_VAR_NAME = "FEATURE_STORE_DIR"
-feature_store_dir = os.environ.get(FEATURE_STORE_DIR_ENV_VAR_NAME, "")
-if feature_store_dir == "":
-    raise Exception(f"Env var {FEATURE_STORE_DIR_ENV_VAR_NAME} is not set")
-
-feature_store_dir = Path(feature_store_dir)
-driver_stats_parquet_file = feature_store_dir / "data_sources/driver_stats.parquet"
+driver_stats_parquet_file = "../data_sources/driver_stats.parquet"
 
 driver_stats_batch_source = FileSource(
     name="driver_stats",
     file_format=ParquetFormat(),
-    path=driver_stats_parquet_file.absolute().as_posix(),
+    path=driver_stats_parquet_file,
     timestamp_field="event_timestamp",
     created_timestamp_column="created",
 )
