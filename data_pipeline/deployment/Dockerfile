@@ -1,17 +1,25 @@
+FROM python:3.8-slim AS build
+
+RUN apt-get update
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+COPY deployment/requirements.txt .
+RUN pip install -r requirements.txt
+
 FROM python:3.8-slim
 
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends \
-         openjdk-11-jre-headless \
-  && apt-get autoremove -yqq --purge \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
-  
+RUN apt-get update && \
+  apt-get install -y --no-install-recommends \
+    openjdk-11-jre-headless && \
+  apt-get autoremove -yqq --purge && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
+
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
-WORKDIR /data-pipeline
+COPY --from=build /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
-COPY . /data-pipeline
-
-RUN pip3 install -r /data-pipeline/requirements.txt
-
+COPY . /data_pipeline
+WORKDIR /data_pipeline

@@ -1,22 +1,27 @@
-import datetime
+import sys
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(BASE_DIR)
 
 import pendulum
 
 from airflow import DAG
 from airflow.providers.docker.operators.docker import DockerOperator
 
-DATA_PIPELINE_TAG = "latest"
+from utils import *
 
 with DAG(
-    dag_id='materlize_offline_to_online',
+    dag_id="materlize_offline_to_online",
+    default_args=DefaultConfig.DEFAULT_DAG_ARGS,
     schedule_interval="@once",
-    start_date=pendulum.datetime(2021, 1, 1, tz="UTC"),
+    start_date=pendulum.datetime(2022, 1, 1, tz="UTC"),
     catchup=False,
+    tags=["data_pipeline"],
 ) as dag:
+    # TODO: Fix this task
     materialize_task = DockerOperator(
-        task_id='materialize_task',
-        image=f'mlopsvn/mlops_crash_coursedata_pipeline:{DATA_PIPELINE_TAG}',
-        api_version='auto',
-        auto_remove=True,
-        command="/bin/bash -c 'chmod +x ./scripts/materialize_offline_to_online/materialize.sh'",
+        task_id="materialize_task",
+        **DefaultConfig.DEFAULT_DOCKER_OPERATOR_ARGS,
+        command="/bin/bash -c 'chmod +x ./scripts/feast_helper.sh'",
     )

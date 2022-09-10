@@ -1,14 +1,11 @@
 from datetime import timedelta
+
+from feast import FeatureView, Field
+from feast.stream_feature_view import stream_feature_view
+from feast.types import Float32, Int64
 from pyspark.sql import DataFrame
 
-from feast import (
-    FeatureView,
-    Field,
-)
-from feast.stream_feature_view import stream_feature_view
-from feast.types import Float32
-
-from data_sources import driver_stats_stream_source, driver_stats_batch_source
+from data_sources import driver_stats_batch_source, driver_stats_stream_source
 from entities import driver
 
 driver_stats_view = FeatureView(
@@ -19,12 +16,14 @@ driver_stats_view = FeatureView(
     schema=[
         Field(name="conv_rate", dtype=Float32),
         Field(name="acc_rate", dtype=Float32),
+        Field(name="avg_daily_trips", dtype=Int64),
     ],
     online=True,
     source=driver_stats_batch_source,
     tags={},
-    owner="batch_source_owner@gmail.com",
+    owner="mlopsvn@gmail.com",
 )
+
 
 @stream_feature_view(
     entities=[driver],

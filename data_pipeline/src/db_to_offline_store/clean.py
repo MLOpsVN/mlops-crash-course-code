@@ -8,7 +8,7 @@ from utils import logger
 my_logger = logger.get_logger()
 
 def main():
-    my_logger.info("Ingesting...")
+    my_logger.info("Cleaning up...")
 
 if __name__ == "__main__":
     main()

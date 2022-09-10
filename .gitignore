@@ -133,6 +133,16 @@ dmypy.json
 bin
 tmp
 mlruns
+run_env
 
-# Training code
-training/model
+# Data pipeline
+*/feature_repo/registry
+
+# Training pipeline
+training_pipeline/nbs/model
+training_pipeline/data_sources
+training_pipeline/feature_repo
+
+# Model deployment
+model_deployment/data_sources
+model_deployment/feature_repo
