@@ -1,0 +1,8 @@
+.dockerignore
+__pycache__
+dags
+data_sources
+deployment
+examples
+feature_repo
+dev_requirements.txt
