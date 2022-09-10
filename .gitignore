@@ -135,5 +135,8 @@ tmp
 mlruns
 run_env
 
+# Data pipeline
+feature_repo/registry
+
 # Training code
 training_pipeline/nbs/model
