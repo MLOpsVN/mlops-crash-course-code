@@ -6,7 +6,7 @@ from feast import (
     Field,
 )
 from feast.stream_feature_view import stream_feature_view
-from feast.types import Float32
+from feast.types import Float32, Int32
 
 from data_sources import driver_stats_stream_source, driver_stats_batch_source
 from entities import driver
@@ -25,7 +25,6 @@ driver_stats_view = FeatureView(
     tags={},
     owner="batch_source_owner@gmail.com",
 )
-
 
 @stream_feature_view(
     entities=[driver],
