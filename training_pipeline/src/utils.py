@@ -17,6 +17,9 @@ class AppConst:
 class AppPath:
     ROOT = Path("/training_pipeline")
     DATA = ROOT / "data"
+    ARTIFACTS = ROOT / "artifacts"
+    FEATURE_STORE_ROOT = ROOT / "feature_store"
+    FEATURE_REPO = FEATURE_STORE_ROOT / "feature_repo"
 
 
 class Log:

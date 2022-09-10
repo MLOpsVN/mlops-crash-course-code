@@ -136,4 +136,4 @@ mlruns
 run_env
 
 # Training code
-training/model
+training_pipeline/nbs/model

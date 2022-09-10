@@ -1,7 +1,7 @@
 .dockerignore
+__pycache__
 dev_requirements.txt
 nbs
-data
+# data
 dags
 deployment
-run_env
