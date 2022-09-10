@@ -138,7 +138,10 @@ run_env
 # Data pipeline
 */feature_repo/registry
 
-# Training code
+# Training pipeline
 training_pipeline/nbs/model
 training_pipeline/data_sources
 training_pipeline/feature_repo
+
+# Model deployment
+model_deployment/feature_repo
