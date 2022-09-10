@@ -1,0 +1,10 @@
+project: feast_demo
+provider: local
+registry:
+  path: registry/local_registry.db
+  cache_ttl_seconds: 5
+online_store:
+  type: redis
+  connection_string: localhost:6377
+offline_store:
+  type: file
