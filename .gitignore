@@ -144,4 +144,5 @@ training_pipeline/data_sources
 training_pipeline/feature_repo
 
 # Model deployment
+model_deployment/data_sources
 model_deployment/feature_repo

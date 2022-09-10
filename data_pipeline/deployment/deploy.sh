@@ -47,6 +47,9 @@ deploy_dags() {
 deploy_feature_repo() {
     rsync -avr data_sources ../training_pipeline
     rsync -avr feature_repo ../training_pipeline --exclude registry
+
+    rsync -avr data_sources ../model_deployment
+    rsync -avr feature_repo ../model_deployment --exclude registry
 }
 
 shift
