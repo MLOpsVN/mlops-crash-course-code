@@ -1,4 +1,7 @@
+.dockerignore
+dev_requirements.txt
 nbs
 data
 dags
 deployment
+run_env

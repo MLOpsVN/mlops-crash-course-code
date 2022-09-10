@@ -133,6 +133,7 @@ dmypy.json
 bin
 tmp
 mlruns
+run_env
 
 # Training code
 training/model
