@@ -6,10 +6,14 @@ def main(args):
     if args.mode == 'setup':
         if args.store == 'online':
             query = processor.ingest_stream_feature_view()
-        else:
+        elif args.store == 'offline':
             query = processor.ingest_stream_feature_view(PushMode.OFFLINE)
-    else:
+        else:
+            raise ValueError("Invalid store! Please select online or offline")
+    elif args.store == 'teardown':
         query.stop()
+    else:
+        raise ValueError("Invalid mode! Please select setup or teardown")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Ingest stream to stores.')

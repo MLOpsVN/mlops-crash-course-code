@@ -13,7 +13,7 @@ with DAG(
 ) as dag:
     ingest_task = DockerOperator(
         task_id='ingest_task',
-        image=f'dangvanquan25/data-pipeline:{DATA_PIPELINE_TAG}',
+        image=f'mlopsvn/mlops_crash_coursedata_pipeline:{DATA_PIPELINE_TAG}',
         api_version='auto',
         auto_remove=True,
         command="/bin/bash -c 'cd scripts/db_to_offline_store && python ingest.py'",
@@ -21,7 +21,7 @@ with DAG(
 
     clean_task = DockerOperator(
         task_id='clean_task',
-        image=f'dangvanquan25/data-pipeline:{DATA_PIPELINE_TAG}',
+        image=f'mlopsvn/mlops_crash_coursedata_pipeline:{DATA_PIPELINE_TAG}',
         api_version='auto',
         auto_remove=True,
         command="/bin/bash -c 'cd scripts/db_to_offline_store && python clean.py'",
@@ -29,7 +29,7 @@ with DAG(
 
     explore_and_validate_task = DockerOperator(
         task_id='explore_and_validate_task',
-        image=f'dangvanquan25/data-pipeline:{DATA_PIPELINE_TAG}',
+        image=f'mlopsvn/mlops_crash_coursedata_pipeline:{DATA_PIPELINE_TAG}',
         api_version='auto',
         auto_remove=True,
         command="/bin/bash -c 'cd scripts/db_to_offline_store && python explore_and_validate.py'",
