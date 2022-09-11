@@ -1,6 +1,6 @@
 SHELL=/bin/bash
 
-ENV_FILE=.env
+ENV_FILE="./deployment/.env"
 PUSH_IMAGE=""
 DAGS_DIR="../../mlops-crash-course-platform/airflow/run_env/dags/training_pipeline"
 

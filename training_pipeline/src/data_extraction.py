@@ -10,22 +10,21 @@ import pandas as pd
 from utils import *
 
 Log(AppConst.DATA_EXTRACTION)
+AppPath()
 
 
 def extract_data():
     Log().log.info("start extract_data")
-
-    cwd = os.getcwd()
-    Log().log.info(f"current dir: {cwd}")
-    inspect_dir(cwd)
-
-    inspect_dir(AppPath.FEATURE_REPO)
+    inspect_curr_dir()
 
     # Load driver order data
+    inspect_dir(AppPath.DATA)
     orders = pd.read_csv(AppPath.DATA / "driver_orders.csv", sep="\t")
     orders["event_timestamp"] = pd.to_datetime(orders["event_timestamp"])
 
     # Connect to your feature store provider
+    inspect_dir(AppPath.DATA_SOURCES)
+    inspect_dir(AppPath.FEATURE_REPO)
     fs = feast.FeatureStore(repo_path=AppPath.FEATURE_REPO)
 
     # Retrieve training data
@@ -34,14 +33,21 @@ def extract_data():
         features=[
             "driver_stats:conv_rate",
             "driver_stats:acc_rate",
+            "driver_stats:avg_daily_trips",
         ],
     ).to_df()
+
+    training_df = training_df.drop(["event_timestamp", "driver_id"], axis=1)
 
     Log().log.info("----- Feature schema -----")
     Log().log.info(training_df.info())
 
     Log().log.info("----- Example features -----")
     Log().log.info(training_df.head())
+
+    # Write to file
+    to_parquet(training_df, AppPath.TRAINING_PQ)
+    inspect_dir(AppPath.TRAINING_PQ.parent)
 
     Log().log.info("end extract_data")
 

@@ -11,7 +11,7 @@ driver_stats_batch_source = FileSource(
     name="driver_stats",
     file_format=ParquetFormat(),
     path=driver_stats_parquet_file,
-    timestamp_field="event_timestamp",
+    timestamp_field="datetime",
     created_timestamp_column="created",
 )
 
