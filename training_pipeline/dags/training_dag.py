@@ -33,31 +33,31 @@ with DAG(
 
     data_validation_task = DockerOperator(
         task_id="data_validation_task",
-        command="python src/data_validation.py",
+        command="bash -c 'cd src && python data_validation.py'",
         **DefaultConfig.DEFAULT_DOCKER_OPERATOR_ARGS,
     )
 
     data_preparation_task = DockerOperator(
         task_id="data_preparation_task",
-        command="python src/data_preparation.py",
+        command="bash -c 'cd src && python data_preparation.py'",
         **DefaultConfig.DEFAULT_DOCKER_OPERATOR_ARGS,
     )
 
     model_training_task = DockerOperator(
         task_id="model_training_task",
-        command="python src/model_training.py",
+        command="bash -c 'cd src && python model_training.py'",
         **DefaultConfig.DEFAULT_DOCKER_OPERATOR_ARGS,
     )
 
     model_evaluation_task = DockerOperator(
         task_id="model_evaluation_task",
-        command="python src/model_evaluation.py",
+        command="bash -c 'cd src && python model_evaluation.py'",
         **DefaultConfig.DEFAULT_DOCKER_OPERATOR_ARGS,
     )
 
     model_validation_task = DockerOperator(
         task_id="model_validation_task",
-        command="python src/model_validation.py",
+        command="bash -c 'cd src && python model_validation.py'",
         **DefaultConfig.DEFAULT_DOCKER_OPERATOR_ARGS,
     )
 

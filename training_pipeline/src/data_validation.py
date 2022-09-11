@@ -8,41 +8,62 @@ Data schema skews: These skews are considered anomalies in the input data, which
 Data values skews: These skews are significant changes in the statistical properties of data, which means that data patterns are changing, and you need to trigger a retraining of the model to capture these changes.
 """
 
+import pandas as pd
+
 from utils import *
 
 Log(AppConst.DATA_VALIDATION)
+AppPath()
 
 
 # Check data schema skews
-def check_receiving_unexpected_features():
-    Log().log.info("start check_receiving_unexpected_features")
-    Log().log.info("end check_receiving_unexpected_features")
+def check_unexpected_features(df: pd.DataFrame):
+    Log().log.info("start check_unexpected_features")
+    config = Config()
+    cols = set(df.columns)
+    errors = []
+    for col in cols:
+        if not col in config.feature_dict:
+            errors.append(f"feature {col} is not expected")
+
+    if len(errors) > 0:
+        raise Exception(errors)
 
 
-def check_receiving_all_expected_features():
-    Log().log.info("start check_receiving_all_expected_features")
-    Log().log.info("end check_receiving_all_expected_features")
+def check_expected_features(df: pd.DataFrame):
+    Log().log.info("start check_expected_features")
+    config = Config()
+    dtypes = dict(df.dtypes)
+    errors = []
+    for feature in config.feature_dict:
+        if not feature in dtypes:
+            errors.append(f"feature {feature} not found")
+        else:
+            expected_type = config.feature_dict[feature]
+            real_type = dtypes[feature]
+            if expected_type != real_type:
+                errors.append(
+                    f"feature {feature} expects type {expected_type}, received {real_type}"
+                )
 
-
-def check_receiving_unexpected_feature_values():
-    Log().log.info("start check_receiving_unexpected_feature_values")
-    Log().log.info("end check_receiving_unexpected_feature_values")
+    if len(errors) > 0:
+        raise Exception(errors)
 
 
 # Check data values skews
-def check_data_values_skews():
+def check_data_values_skews(df: pd.DataFrame):
     Log().log.info("start check_data_values_skews")
-    Log().log.info("end check_data_values_skews")
 
 
 # combine
 def validate_data():
     Log().log.info("start validate_data")
-    check_receiving_unexpected_features()
-    check_receiving_all_expected_features()
-    check_receiving_unexpected_feature_values()
-    check_data_values_skews()
-    Log().log.info("end validate_data")
+    inspect_curr_dir()
+
+    df = load_df(AppPath.TRAINING_PQ)
+    check_unexpected_features(df)
+    check_expected_features(df)
+    check_data_values_skews(df)
 
 
 if __name__ == "__main__":
