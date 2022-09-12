@@ -145,5 +145,5 @@ training_pipeline/feature_repo
 training_pipeline/artifacts/*
 
 # Model deployment
-model_deployment/data_sources
-model_deployment/feature_repo
+model_serving/data_sources
+model_serving/feature_repo
