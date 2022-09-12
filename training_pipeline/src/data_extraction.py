@@ -11,15 +11,15 @@ def extract_data():
     Log().log.info("start extract_data")
     inspect_curr_dir()
 
-    # Load driver order data
-    inspect_dir(AppPath.DATA)
-    orders = pd.read_csv(AppPath.DATA / "driver_orders.csv", sep="\t")
-    orders["event_timestamp"] = pd.to_datetime(orders["event_timestamp"])
-
     # Connect to your feature store provider
     inspect_dir(AppPath.DATA_SOURCES)
     inspect_dir(AppPath.FEATURE_REPO)
     fs = feast.FeatureStore(repo_path=AppPath.FEATURE_REPO)
+
+    # Load driver order data
+    inspect_dir(AppPath.DATA)
+    orders = pd.read_csv(AppPath.DATA / "driver_orders.csv", sep="\t")
+    orders["event_timestamp"] = pd.to_datetime(orders["event_timestamp"])
 
     # Retrieve training data
     training_df = fs.get_historical_features(

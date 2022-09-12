@@ -39,9 +39,14 @@ push() {
 }
 
 deploy_dags() {
-    dags_dir=$1
-    mkdir -p "$dags_dir"
-    cp dags/* "$dags_dir"
+    if [[ -z "$DAGS_DIR" ]]; then
+        echo "Missing DAGS_DIR env var"
+        usage
+        exit 1
+    fi
+
+    mkdir -p "$DAGS_DIR"
+    cp dags/* "$DAGS_DIR"
 }
 
 deploy_feature_repo() {

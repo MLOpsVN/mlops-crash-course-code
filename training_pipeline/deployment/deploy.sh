@@ -14,12 +14,14 @@ if [[ -z "$DOCKER_USER" ]]; then
 fi
 
 usage() {
-    echo "deploy.sh <command>"
+    echo "deploy.sh <command> <arguments>"
     echo "Available commands:"
     echo " build                build image"
     echo " push                 push image"
     echo " build_push           build and push image"
     echo " dags                 deploy airflow dags"
+    echo "Available arguments:"
+    echo " [dags dir]           airflow dags directory, for command dags only"
 }
 
 if [[ -z "$cmd" ]]; then
@@ -39,9 +41,14 @@ push() {
 }
 
 deploy_dags() {
-    dags_dir=$1
-    mkdir -p "$dags_dir"
-    cp dags/* "$dags_dir"
+    if [[ -z "$DAGS_DIR" ]]; then
+        echo "Missing DAGS_DIR env var"
+        usage
+        exit 1
+    fi
+
+    mkdir -p "$DAGS_DIR"
+    cp dags/* "$DAGS_DIR"
 }
 
 shift
