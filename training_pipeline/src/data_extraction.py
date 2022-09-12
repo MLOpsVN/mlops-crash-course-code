@@ -1,9 +1,3 @@
-"""
-Reference: https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning
-
-Data extraction: You select and integrate the relevant data from various data sources for the ML task.
-"""
-
 import feast
 import pandas as pd
 
