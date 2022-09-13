@@ -13,6 +13,3 @@ build_push_image:
 
 deploy_dags:
 	source ${ENV_FILE} && bash deployment/deploy.sh dags
-
-deploy_registered_model_file:
-	source ${ENV_FILE} && bash deployment/deploy.sh registered_model_file
