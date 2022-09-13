@@ -30,6 +30,8 @@ def validate_model():
     Log().log.info(f"Model validation succeeds, registering model")
     run_info = RunInfo.load(AppPath.RUN_INFO)
     Log().log.info(f"loaded run_info {run_info}")
+
+    mlflow.set_tracking_uri(config.mlflow_tracking_uri)
     result = mlflow.register_model(
         f"runs:/{run_info.run_id}/{AppConst.MLFLOW_MODEL_PATH_PREFIX}",
         config.registered_model_name,

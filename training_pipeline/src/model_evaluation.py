@@ -22,6 +22,9 @@ def evaluate_model():
     run_info = RunInfo.load(AppPath.RUN_INFO)
     Log().log.info(f"loaded run_info {run_info}")
 
+    config = Config()
+    mlflow.set_tracking_uri(config.mlflow_tracking_uri)
+
     model = mlflow.pyfunc.load_model(
         f"runs:/{run_info.run_id}/{AppConst.MLFLOW_MODEL_PATH_PREFIX}"
     )

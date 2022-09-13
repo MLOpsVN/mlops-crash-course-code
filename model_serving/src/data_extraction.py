@@ -10,6 +10,7 @@ AppPath()
 def extract_data():
     Log().log.info("start extract_data")
     inspect_curr_dir()
+    config = Config()
 
     # Connect to your feature store provider
     inspect_dir(AppPath.DATA_SOURCES)
@@ -17,12 +18,13 @@ def extract_data():
     fs = feast.FeatureStore(repo_path=AppPath.FEATURE_REPO)
 
     # Load driver order data
-    inspect_dir(AppPath.DATA)
-    orders = pd.read_csv(AppPath.DATA / "driver_orders.csv", sep="\t")
+    batch_input_file = AppPath.ROOT / config.batch_input_file
+    inspect_dir(batch_input_file)
+    orders = pd.read_csv(batch_input_file, sep="\t")
     orders["event_timestamp"] = pd.to_datetime(orders["event_timestamp"])
 
     # Retrieve training data
-    training_df = fs.get_historical_features(
+    batch_input_df = fs.get_historical_features(
         entity_df=orders,
         features=[
             "driver_stats:conv_rate",
@@ -31,17 +33,18 @@ def extract_data():
         ],
     ).to_df()
 
-    training_df = training_df.drop(["event_timestamp", "driver_id"], axis=1)
+    batch_input_df = batch_input_df.drop(["event_timestamp", "driver_id"], axis=1)
+    batch_input_df = batch_input_df.drop(["trip_completed"], axis=1)
 
     Log().log.info("----- Feature schema -----")
-    Log().log.info(training_df.info())
+    Log().log.info(batch_input_df.info())
 
     Log().log.info("----- Example features -----")
-    Log().log.info(training_df.head())
+    Log().log.info(batch_input_df.head())
 
     # Write to file
-    to_parquet(training_df, AppPath.TRAINING_PQ)
-    inspect_dir(AppPath.TRAINING_PQ.parent)
+    to_parquet(batch_input_df, AppPath.BATCH_INPUT_PQ)
+    inspect_dir(AppPath.BATCH_INPUT_PQ)
 
 
 if __name__ == "__main__":
