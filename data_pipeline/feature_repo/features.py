@@ -27,19 +27,19 @@ driver_stats_view = FeatureView(
 
 @stream_feature_view(
     entities=[driver],
-    ttl=timedelta(days=100),
+    ttl=timedelta(days=36500),
     mode="spark",
     schema=[
         Field(name="conv_rate", dtype=Float32),
         Field(name="acc_rate", dtype=Float32),
     ],
-    timestamp_field="event_timestamp",
+    timestamp_field="datetime",
     online=True,
     source=driver_stats_stream_source,
     tags={},
     owner="stream_source_owner@gmail.com",
 )
-def driver_hourly_stats_stream(df: DataFrame):
+def driver_stats_stream(df: DataFrame):
     from pyspark.sql.functions import col
 
     return (

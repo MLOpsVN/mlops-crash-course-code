@@ -23,13 +23,11 @@ def main(args):
             producer = KafkaProducer(
                 bootstrap_servers=[args.bootstrap_servers], 
                 client_id="driver_stats_producer",
-                # api_version=(0,10,2),
             )
 
             admin = KafkaAdminClient(
                 bootstrap_servers=[args.bootstrap_servers],
                 client_id="driver_stats_admin",
-                # api_version=(0,10,2),
             )
 
             logger.info("Starting admin and producer successfully!")
@@ -50,15 +48,15 @@ def main(args):
         pass
 
     # publish messages to the newly created topic
-    df = pd.read_parquet(args.data).sort_values(by="event_timestamp")
-    records = df[["driver_id", "event_timestamp", "created", "conv_rate", "acc_rate"]].to_dict("records")
+    df = pd.read_parquet(args.data).sort_values(by="datetime")
+    records = df[["driver_id", "datetime", "created", "conv_rate", "acc_rate"]].to_dict("records")
 
     # simulate streaming events by increase one week for every records
     iteration = 1
     while True:
         for record in records:
-            record["event_timestamp"] = (
-                record["event_timestamp"] + pd.Timedelta(weeks=iteration)
+            record["datetime"] = (
+                record["datetime"] + pd.Timedelta(weeks=iteration)
             ).strftime("%Y-%m-%d %H:%M:%S")
             record["created"] = record["created"].strftime("%Y-%m-%d %H:%M:%S")
             producer.send(args.topic_name, json.dumps(record).encode())

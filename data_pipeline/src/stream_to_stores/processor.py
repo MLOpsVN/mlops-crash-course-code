@@ -22,7 +22,7 @@ def preprocess_fn(rows: pd.DataFrame):
     return rows
 
 ingestion_config = SparkProcessorConfig(mode="spark", source="kafka", spark_session=spark, processing_time="30 seconds", query_timeout=15)
-sfv = store.get_stream_feature_view("driver_hourly_stats_stream")
+sfv = store.get_stream_feature_view("driver_stats_stream")
 
 processor = get_stream_processor_object(
     config=ingestion_config,
