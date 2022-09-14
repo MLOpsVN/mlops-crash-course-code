@@ -13,3 +13,12 @@ build_push_image:
 
 deploy_dags:
 	source ${ENV_FILE} && bash deployment/deploy.sh dags
+
+bentoml_serve:
+	bash scripts/bentoml_helper.sh serve
+
+compose_up:
+	docker-compose -f ./deployment/docker-compose.yml up -d
+
+compose_down:
+	docker-compose -f ./deployment/docker-compose.yml down

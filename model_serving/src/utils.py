@@ -13,6 +13,8 @@ load_dotenv()
 
 class AppConst:
     LOG_LEVEL = logging.DEBUG
+    BENTOML_MODEL_SAVING = "bentoml_model_saving"
+    BENTOML_SERVICE = "bentoml_service"
     DATA_EXTRACTION = "data_extraction"
     BATCH_PREDICTION = "batch_prediction"
 
@@ -94,15 +96,9 @@ def load_df(path) -> pd.DataFrame:
     return df
 
 
-def to_parquet(df, path):
+def to_parquet(df: pd.DataFrame, path):
     Log().log.info(f"start to_parquet {path}")
-
-    if type(df) == pd.DataFrame:
-        df.to_parquet(path, engine="fastparquet")
-    elif type(df) == np.ndarray:
-        import fastparquet
-
-        fastparquet.write(path, df)
+    df.to_parquet(path, engine="fastparquet")
 
 
 def dump_json(dict_obj: dict, path):

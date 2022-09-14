@@ -1,3 +1,4 @@
+bentoml==1.0.5
 fastparquet==0.8.3
 feast[redis]==0.24.0
 mlflow==1.28.0

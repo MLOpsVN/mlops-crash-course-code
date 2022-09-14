@@ -1,0 +1,12 @@
+version: "3.7"
+services:
+  bentoml_service:
+    image: $DOCKER_USER/mlops_crash_course/model_serving:latest
+    container_name: model_serving
+    restart: always
+    volumes:
+      - ../artifacts:/model_serving/artifacts
+    command: /bin/bash scripts/bentoml_helper.sh serve
+    ports:
+      - 3000:3000
+    network_mode: host

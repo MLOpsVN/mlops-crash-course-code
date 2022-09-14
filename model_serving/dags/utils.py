@@ -25,7 +25,7 @@ class DefaultConfig:
     }
 
     DEFAULT_DOCKER_OPERATOR_ARGS = {
-        "image": f"{AppConst.DOCKER_USER}/mlops_crash_course/model_serving_batch:latest",
+        "image": f"{AppConst.DOCKER_USER}/mlops_crash_course/model_serving:latest",
         "api_version": "auto",
         "auto_remove": True,
         "network_mode": "host",
