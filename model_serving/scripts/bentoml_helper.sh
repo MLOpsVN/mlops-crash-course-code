@@ -7,6 +7,7 @@ usage() {
     echo "Available commands:"
     echo " serve          serve a bentoml service"
     echo "Available options:"
+    echo " --port=x       bentoml service's port"
     echo " --reload       auto reload bentoml service"
 }
 

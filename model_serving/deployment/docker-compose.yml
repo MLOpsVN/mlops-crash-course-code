@@ -6,7 +6,7 @@ services:
     restart: always
     volumes:
       - ../artifacts:/model_serving/artifacts
-    command: /bin/bash scripts/bentoml_helper.sh serve
+    command: /bin/bash scripts/bentoml_helper.sh serve --port=$ONLINE_SERVING_PORT
     ports:
-      - 3000:3000
+      - $ONLINE_SERVING_PORT:$ONLINE_SERVING_PORT
     network_mode: host
