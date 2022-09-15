@@ -2,7 +2,7 @@ version: "3.7"
 services:
   bentoml_service:
     image: $DOCKER_USER/mlops_crash_course/model_serving:latest
-    container_name: model_serving
+    container_name: online_serving
     restart: always
     volumes:
       - ../artifacts:/model_serving/artifacts

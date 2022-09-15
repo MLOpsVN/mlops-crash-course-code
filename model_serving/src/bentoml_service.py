@@ -32,6 +32,12 @@ def save_model() -> bentoml.Model:
     bentoml_model = bentoml.sklearn.save_model(
         model_name,
         model,
+        # model signatures for runner inference
+        signatures={
+            "predict": {
+                "batchable": False,
+            },
+        },
         labels={
             "owner": "mlopsvn",
         },

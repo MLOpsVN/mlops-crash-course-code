@@ -42,7 +42,7 @@ class DefaultConfig:
                 target="/model_serving/artifacts",
                 type="bind",
             ),
-            # artifacts
+            # data
             Mount(
                 source=AppPath.DATA.absolute().as_posix(),
                 target="/model_serving/data",
