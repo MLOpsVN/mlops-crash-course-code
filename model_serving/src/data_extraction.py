@@ -33,9 +33,7 @@ def extract_data():
         ],
     ).to_df()
 
-    batch_input_df = batch_input_df.drop(
-        ["event_timestamp", "driver_id", "trip_completed"], axis=1
-    )
+    batch_input_df = batch_input_df.drop(["event_timestamp", "driver_id"], axis=1)
 
     Log().log.info("----- Feature schema -----")
     Log().log.info(batch_input_df.info())
