@@ -1,4 +1,4 @@
-# Training pipeline
+# Model serving
 
 ```bash
 # Go to data pipeline and deploy feature repo
