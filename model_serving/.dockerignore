@@ -4,4 +4,3 @@ artifacts
 dev_requirements.txt
 dags
 data
-feature_repo

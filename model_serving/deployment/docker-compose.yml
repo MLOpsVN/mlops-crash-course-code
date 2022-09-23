@@ -6,6 +6,7 @@ services:
     restart: on-failure
     volumes:
       - ../artifacts:/model_serving/artifacts
+      - ../feature_repo:/model_serving/feature_repo
     command: /bin/bash scripts/bentoml_helper.sh serve --port=$ONLINE_SERVING_PORT
     ports:
       - $ONLINE_SERVING_PORT:$ONLINE_SERVING_PORT

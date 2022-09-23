@@ -132,19 +132,3 @@ dmypy.json
 .vscode
 bin
 tmp
-mlruns
-run_env
-
-# Data pipeline
-data_pipeline/feature_repo/registry
-
-# Training pipeline
-training_pipeline/artifacts/*
-training_pipeline/data_sources
-training_pipeline/feature_repo
-training_pipeline/nbs/model
-
-# Model deployment
-model_serving/artifacts/*
-model_serving/data_sources
-model_serving/feature_repo

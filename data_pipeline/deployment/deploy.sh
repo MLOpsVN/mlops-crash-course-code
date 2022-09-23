@@ -20,6 +20,7 @@ usage() {
     echo " push                 push image"
     echo " build_push           build and push image"
     echo " dags                 deploy airflow dags"
+    echo " feature_repo         deploy feature repo and related scripts"
 }
 
 if [[ -z "$cmd" ]]; then
