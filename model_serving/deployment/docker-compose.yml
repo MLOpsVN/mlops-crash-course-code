@@ -3,10 +3,10 @@ services:
   bentoml_service:
     image: $DOCKER_USER/mlops_crash_course/model_serving:latest
     container_name: online_serving
-    restart: always
+    restart: on-failure
     volumes:
       - ../artifacts:/model_serving/artifacts
-    command: /bin/bash scripts/bentoml_helper.sh serve
+    command: /bin/bash scripts/bentoml_helper.sh serve --port=$ONLINE_SERVING_PORT
     ports:
-      - 3000:3000
+      - $ONLINE_SERVING_PORT:$ONLINE_SERVING_PORT
     network_mode: host

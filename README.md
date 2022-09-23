@@ -1,1 +1,1 @@
-# mlops-crash-course-training
+# mlops-crash-course-code
