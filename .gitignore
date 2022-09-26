@@ -129,6 +129,7 @@ dmypy.json
 .pyre/
 
 # Common
+.DS_Store
 .vscode
 bin
 tmp
