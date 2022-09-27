@@ -12,10 +12,7 @@ load_dotenv()
 
 class AppConst:
     LOG_LEVEL = logging.DEBUG
-    BENTOML_MODEL_SAVING = "bentoml_model_saving"
-    BENTOML_SERVICE = "bentoml_service"
-    DATA_EXTRACTION = "data_extraction"
-    BATCH_PREDICTION = "batch_prediction"
+    MONITORING_SERVICE = "monitoring_service"
 
 
 class AppPath:
