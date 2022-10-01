@@ -1,9 +1,12 @@
 from typing import Any, Dict, List, Optional
+from urllib import request
+import uuid
 
 import bentoml
 import feast
 import mlflow
 import numpy as np
+import requests
 from bentoml.io import JSON, NumpyNdarray
 from mlflow.models.signature import ModelSignature
 from pydantic import BaseModel
@@ -73,6 +76,7 @@ fs = feast.FeatureStore(repo_path=AppPath.FEATURE_REPO)
 
 
 class InferenceRequest(BaseModel):
+    id: str
     driver_ids: List[int]
 
 
@@ -119,11 +123,17 @@ def inference(request: InferenceRequest, ctx: bentoml.Context) -> Dict[str, Any]
 
         result = predict(input_features[sorted(input_features)])
         df["prediction"] = result
-        best_driver_id = df["driver_id"].iloc[df["prediction"].argmax()]
+        best_idx = df["prediction"].argmax()
+        best_driver_id = df["driver_id"].iloc[best_idx]
         Log().log.info(f"best_driver_id: {best_driver_id}")
 
         response.prediction = best_driver_id
         ctx.response.status_code = 200
+
+        # monitor
+        monitor_df = df.iloc[[best_idx]]
+        monitor_df["request_id"].iloc[0] = request.id
+        monitor_request(monitor_df)
 
     except Exception as e:
         Log().log.error(f"error: {e}")
@@ -132,3 +142,31 @@ def inference(request: InferenceRequest, ctx: bentoml.Context) -> Dict[str, Any]
 
     Log().log.info(f"response: {response}")
     return response
+
+
+def monitor_request(df: pd.DataFrame):
+    Log().log.info("start monitor_request")
+    try:
+        data_dict = df.to_dict()
+
+        Log().log.info(f"sending data_dict {data_dict}")
+        response = request.post(
+            f"http://localhost:8309/iterate",
+            data=json.dumps([data_dict], cls=NumpyEncoder),
+            headers={"content-type": "application/json"},
+        )
+
+        if response.status_code == 200:
+            Log().log.info(f"Success")
+        else:
+            Log().log.info(
+                f"Got an error code {response.status_code} for the data chunk. Reason: {response.reason}, error text: {response.text}"
+            )
+
+    except requests.exceptions.ConnectionError as error:
+        Log().log.error(
+            f"Cannot reach monitoring service, error: {error}, data: {data_dict}"
+        )
+
+    except Exception as error:
+        Log().log.error(f"Error: {error}")

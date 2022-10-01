@@ -4,6 +4,7 @@ import os
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
 
@@ -65,6 +66,21 @@ class Log:
         logger.addHandler(stream_handler)
         logger.setLevel(AppConst.LOG_LEVEL)
         return logger
+
+
+# the encoder helps to convert NumPy types in source data to JSON-compatible types
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.void):
+            return None
+
+        if isinstance(obj, (np.generic, np.bool_)):
+            return obj.item()
+
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+
+        return obj
 
 
 def inspect_dir(path):

@@ -4,6 +4,7 @@ import os
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
 
@@ -13,18 +14,25 @@ load_dotenv()
 class AppConst:
     LOG_LEVEL = logging.DEBUG
     MONITORING_SERVICE = "monitoring_service"
+    MOCK_REQUEST = "mock_request"
+    DELAY_SEC = 5
+
+
+class DataType:
+    NORMAL = "normal"
+    DRIFT = "drift"
 
 
 class AppPath:
-    # set MODEL_SERVING_DIR in dev environment for quickly testing the code
-    ROOT = Path(os.environ.get("MODEL_SERVING_DIR", "/model_serving"))
+    # set MONITORING_SERVICE_DIR in dev environment for quickly testing the code
+    ROOT = Path(os.environ.get("MONITORING_SERVICE_DIR", "/monitoring_service"))
     DATA = ROOT / "data"
     DATA_SOURCES = ROOT / "data_sources"
     FEATURE_REPO = ROOT / "feature_repo"
     ARTIFACTS = ROOT / "artifacts"
 
-    BATCH_INPUT_PQ = ARTIFACTS / "batch_input.parquet"
-    BATCH_OUTPUT_PQ = ARTIFACTS / "batch_output.parquet"
+    NORMAL_DATA = DATA / "normal_data.parquet"
+    DRIFT_DATA = DATA / "drift_data.parquet"
 
     def __init__(self) -> None:
         AppPath.ARTIFACTS.mkdir(parents=True, exist_ok=True)
@@ -32,17 +40,7 @@ class AppPath:
 
 class Config:
     def __init__(self) -> None:
-        import numpy as np
-
-        self.feature_dict = {
-            "conv_rate": np.float64,
-            "acc_rate": np.float64,
-            "avg_daily_trips": np.int64,
-            "trip_completed": np.int64,
-        }
-        self.mlflow_tracking_uri = os.environ.get("MLFLOW_TRACKING_URI")
-        self.batch_input_file = os.environ.get("BATCH_INPUT_FILE")
-        self.registered_model_file = os.environ.get("REGISTERED_MODEL_FILE")
+        self.label_file: str = os.environ.get("LABEL_FILE")
 
 
 class Log:
