@@ -4,7 +4,7 @@ pipeline {
         CC = 'clang'
     }
 
-    when (changeset "data_pipeline/*.*" ) {
+    when {changeset "data_pipeline/*.*" } {
         stages {
             when 
             stage('Build') {
@@ -25,7 +25,7 @@ pipeline {
         }
     } 
     
-    when (changeset "training_pipeline/*.*" ) {
+    when {changeset "training_pipeline/*.*" } {
         stages {
             stage('Build') {
                 steps {
