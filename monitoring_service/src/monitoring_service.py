@@ -24,6 +24,7 @@ app = Flask(AppConst.MONITORING_SERVICE)
 app.wsgi_app = DispatcherMiddleware(
     app.wsgi_app, {"/metrics": prometheus_client.make_wsgi_app()}
 )
+pd.set_option("display.max_columns", None)
 
 
 class MonitoringService:
@@ -39,7 +40,6 @@ class MonitoringService:
         self.next_run = None
         self.reference_data = None
         self.current_data = None
-        self.config = Config()
 
         # init column mapping
         self.column_mapping = ColumnMapping(
@@ -55,13 +55,12 @@ class MonitoringService:
             monitors=[
                 DataDriftMonitor(),
                 ClassificationPerformanceMonitor(),
-                CatTargetDriftMonitor(),
             ],
             options=[],
         )
 
     def _read_label_data(self):
-        label_file = AppPath.ROOT / self.config.label_file
+        label_file = AppPath.REQUEST_DATA
         if not label_file.exists():
             return None
 
@@ -74,6 +73,7 @@ class MonitoringService:
         merged_data = pd.merge(
             left=new_rows, right=label_data, how="inner", on="request_id"
         )
+        merged_data["prediction"] = 1
         return merged_data
 
     def _process_curr_data(self, new_rows: pd.DataFrame):
@@ -98,6 +98,7 @@ class MonitoringService:
             curr_data.reset_index(drop=True, inplace=True)
 
         self.current_data = curr_data
+        Log().log.info(f"current_data {self.current_data}")
 
         if curr_size < self.WINDOW_SIZE:
             Log().log.info(
@@ -143,7 +144,10 @@ def iterate():
     item = flask.request.json
     Log().log.info(f"receive item {item}")
 
-    SERVICE.iterate(new_rows=pd.DataFrame.from_dict(item))
+    df = pd.DataFrame.from_dict(item)
+    Log().log.info(f"df {df}")
+
+    SERVICE.iterate(new_rows=df)
     return "ok"
 
 

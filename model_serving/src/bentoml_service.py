@@ -1,5 +1,4 @@
 from typing import Any, Dict, List, Optional
-from urllib import request
 import uuid
 
 import bentoml
@@ -15,6 +14,8 @@ from utils import *
 
 Log(AppConst.BENTOML_SERVICE)
 AppPath()
+
+MONITORING_SERVICE_API = "http://localhost:8309/iterate"
 
 
 def save_model() -> bentoml.Model:
@@ -76,7 +77,7 @@ fs = feast.FeatureStore(repo_path=AppPath.FEATURE_REPO)
 
 
 class InferenceRequest(BaseModel):
-    id: str
+    request_id: str
     driver_ids: List[int]
 
 
@@ -102,7 +103,7 @@ def predict(request: np.ndarray) -> np.ndarray:
 )
 def inference(request: InferenceRequest, ctx: bentoml.Context) -> Dict[str, Any]:
     """
-    Example request: {"driver_ids":[1001,1002,1003,1004,1005]}
+    Example request: {"request_id": "1234", "driver_ids":[1001,1002,1003,1004,1005]}
     """
     Log().log.info(f"start inference")
     response = InferenceResponse()
@@ -126,13 +127,16 @@ def inference(request: InferenceRequest, ctx: bentoml.Context) -> Dict[str, Any]
         best_idx = df["prediction"].argmax()
         best_driver_id = df["driver_id"].iloc[best_idx]
         Log().log.info(f"best_driver_id: {best_driver_id}")
+        Log().log.info(f"df: {df}")
 
         response.prediction = best_driver_id
         ctx.response.status_code = 200
 
         # monitor
         monitor_df = df.iloc[[best_idx]]
-        monitor_df["request_id"].iloc[0] = request.id
+        monitor_df = monitor_df.assign(request_id=[request.request_id])
+        monitor_df = monitor_df.assign(best_driver_id=[best_driver_id])
+        Log().log.info(f"monitor_df: {monitor_df}")
         monitor_request(monitor_df)
 
     except Exception as e:
@@ -147,12 +151,12 @@ def inference(request: InferenceRequest, ctx: bentoml.Context) -> Dict[str, Any]
 def monitor_request(df: pd.DataFrame):
     Log().log.info("start monitor_request")
     try:
-        data_dict = df.to_dict()
+        data = json.dumps(df.to_dict(), cls=NumpyEncoder)
 
-        Log().log.info(f"sending data_dict {data_dict}")
-        response = request.post(
-            f"http://localhost:8309/iterate",
-            data=json.dumps([data_dict], cls=NumpyEncoder),
+        Log().log.info(f"sending {data}")
+        response = requests.post(
+            MONITORING_SERVICE_API,
+            data=data,
             headers={"content-type": "application/json"},
         )
 
@@ -165,7 +169,7 @@ def monitor_request(df: pd.DataFrame):
 
     except requests.exceptions.ConnectionError as error:
         Log().log.error(
-            f"Cannot reach monitoring service, error: {error}, data: {data_dict}"
+            f"Cannot reach monitoring service, error: {error}, data: {data}"
         )
 
     except Exception as error:

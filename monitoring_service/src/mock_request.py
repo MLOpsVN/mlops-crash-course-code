@@ -12,6 +12,9 @@ from utils import *
 Log(AppConst.MOCK_REQUEST)
 AppPath()
 
+ONLINE_SERVING_API = "http://localhost:8172/inference"
+DELAY_SEC = 1
+
 
 def construct_request(row: pd.Series) -> dict:
     request_id = row["request_id"]
@@ -26,10 +29,11 @@ def send_request(request: dict) -> None:
     Log().log.info(f"start send_request")
 
     try:
-        Log().log.info(f"sending {request}")
+        data = json.dumps(request)
+        Log().log.info(f"sending {data}")
         response = requests.post(
-            f"http://localhost:8172/inference",
-            data=json.dumps([request]),
+            ONLINE_SERVING_API,
+            data=data,
             headers={"content-type": "application/json"},
         )
 
@@ -44,7 +48,7 @@ def send_request(request: dict) -> None:
         Log().log.info(f"Error: {error}")
 
 
-def main(data_type: str):
+def main(data_type: str, n_request: int = 1):
     Log().log.info(f"load data")
     data_path = AppPath.NORMAL_DATA
     if data_type == DataType.DRIFT:
@@ -57,23 +61,24 @@ def main(data_type: str):
         os.remove(AppPath.FEAST_DATA_SOURCE)
     data_source.to_parquet(AppPath.FEAST_DATA_SOURCE, engine="fastparquet")
 
-    Log().log.info(f"run feast_apply")
-    result = subprocess.run(["make", "feast_apply"])
-    if result.returncode != 0:
-        raise Exception("Failed to run feast_apply")
+    # Log().log.info(f"run feast_apply")
+    # result = subprocess.run(["make", "feast_apply"])
+    # if result.returncode != 0:
+    #     raise Exception("Failed to run feast_apply")
 
-    Log().log.info(f"run feast_materialize")
-    result = subprocess.run(["make", "feast_materialize"])
-    if result.returncode != 0:
-        raise Exception("Failed to run feast_materialize")
+    # Log().log.info(f"run feast_materialize")
+    # result = subprocess.run(["make", "feast_materialize"])
+    # if result.returncode != 0:
+    #     raise Exception("Failed to run feast_materialize")
 
     Log().log.info(f"Send request to online serving API")
-    for idx in range(request_data.shape[0]):
+    n_sent = min(n_request, request_data.shape[0])
+    for idx in range(n_sent):
         row = request_data.iloc[idx]
         request = construct_request(row)
         send_request(request)
-        Log().log.info(f"Wait {AppConst.DELAY_SEC} seconds")
-        time.sleep(AppConst.DELAY_SEC)
+        Log().log.info(f"Wait {DELAY_SEC} seconds")
+        time.sleep(DELAY_SEC)
 
 
 if __name__ == "__main__":
@@ -85,5 +90,11 @@ if __name__ == "__main__":
         default=DataType.NORMAL,
         help=f"values=[{DataType.NORMAL}, {DataType.DRIFT}]",
     )
+    parser.add_argument(
+        "-n",
+        "--n_request",
+        type=int,
+        default=1,
+    )
     args = parser.parse_args()
-    main(args.data_type)
+    main(args.data_type, args.n_request)

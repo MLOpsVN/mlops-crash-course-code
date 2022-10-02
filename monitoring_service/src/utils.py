@@ -15,7 +15,6 @@ class AppConst:
     LOG_LEVEL = logging.DEBUG
     MONITORING_SERVICE = "monitoring_service"
     MOCK_REQUEST = "mock_request"
-    DELAY_SEC = 5
 
 
 class DataType:
@@ -38,11 +37,6 @@ class AppPath:
 
     def __init__(self) -> None:
         AppPath.ARTIFACTS.mkdir(parents=True, exist_ok=True)
-
-
-class Config:
-    def __init__(self) -> None:
-        self.label_file: str = os.environ.get("LABEL_FILE")
 
 
 class Log:
