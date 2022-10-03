@@ -61,15 +61,15 @@ def main(data_type: str, n_request: int = 1):
         os.remove(AppPath.FEAST_DATA_SOURCE)
     data_source.to_parquet(AppPath.FEAST_DATA_SOURCE, engine="fastparquet")
 
-    # Log().log.info(f"run feast_apply")
-    # result = subprocess.run(["make", "feast_apply"])
-    # if result.returncode != 0:
-    #     raise Exception("Failed to run feast_apply")
+    Log().log.info(f"run feast_apply")
+    result = subprocess.run(["make", "feast_apply"])
+    if result.returncode != 0:
+        raise Exception("Failed to run feast_apply")
 
-    # Log().log.info(f"run feast_materialize")
-    # result = subprocess.run(["make", "feast_materialize"])
-    # if result.returncode != 0:
-    #     raise Exception("Failed to run feast_materialize")
+    Log().log.info(f"run feast_materialize")
+    result = subprocess.run(["make", "feast_materialize"])
+    if result.returncode != 0:
+        raise Exception("Failed to run feast_materialize")
 
     Log().log.info(f"Send request to online serving API")
     if n_request != -1:
@@ -100,7 +100,8 @@ if __name__ == "__main__":
         "-n",
         "--n_request",
         type=int,
-        default=1,
+        default=10,
     )
     args = parser.parse_args()
+    Log().log.info(f"args {args}")
     main(args.data_type, args.n_request)

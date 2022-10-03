@@ -14,5 +14,8 @@ build_image:
 build_push_image:
 	source ${ENV_FILE} && bash deployment/deploy.sh build_push
 
-mock_request:
-	python src/mock_request.py
+compose_up:
+	docker-compose -f ./deployment/docker-compose.yml up -d
+
+compose_down:
+	docker-compose -f ./deployment/docker-compose.yml down

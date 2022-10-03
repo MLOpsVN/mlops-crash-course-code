@@ -1,4 +1,6 @@
+import argparse
 from datetime import datetime, timedelta
+import hashlib
 
 import flask
 import pandas as pd
@@ -56,8 +58,9 @@ def merge_request_with_label(
 
 
 class MonitoringService:
+    DATASET_NAME = "drivers"
     WINDOW_SIZE = 5
-    RUN_PERIOD_SEC = 1
+    RUN_PERIOD_SEC = 5
     DATETIME_COL = "datetime"
     NUMERICAL_COLS = ["conv_rate", "acc_rate", "avg_daily_trips"]
     CATEGORICAL_COLS = []
@@ -67,6 +70,7 @@ class MonitoringService:
     def __init__(self) -> None:
         self.next_run = None
         self.current_data = None
+        self.metrics = {}
 
         # read reference data
         self.reference_data = read_reference_data()
@@ -93,6 +97,14 @@ class MonitoringService:
         self.model_performance_monitor = ModelMonitoring(
             monitors=[ClassificationPerformanceMonitor()],
             options=[],
+        )
+
+        #
+        self.hash = hashlib.sha256(
+            pd.util.hash_pandas_object(self.reference_data).values
+        ).hexdigest()
+        self.hash_metric = prometheus_client.Gauge(
+            "evidently:reference_dataset_hash", "", labelnames=["hash"]
         )
 
     def _process_curr_data(self, new_rows: pd.DataFrame):
@@ -149,17 +161,35 @@ class MonitoringService:
             self.column_mapping,
         )
 
-    def _process_metrics(self):
-        Log().log.info("_process_metrics")
-        Log().log.info("features_and_target_monitor.metrics")
-        for metric, value, labels in self.features_and_target_monitor.metrics():
-            report = f"{metric.name} | {value} | {labels}"
-            Log().log.info(report)
+    def _process_metrics(self, evidently_metrics):
+        self.hash_metric.labels(hash=self.hash).set(1)
 
-        Log().log.info("model_performance_monitor.metrics")
-        for metric, value, labels in self.model_performance_monitor.metrics():
-            report = f"{metric.name} | {value} | {labels}"
-            Log().log.info(report)
+        for metric, value, labels in evidently_metrics:
+            metric_key = f"evidently:{metric.name}"
+            found = self.metrics.get(metric_key)
+
+            if not labels:
+                labels = {}
+            labels["dataset_name"] = MonitoringService.DATASET_NAME
+
+            if isinstance(value, str):
+                continue
+
+            if found is None:
+                found = prometheus_client.Gauge(
+                    metric_key, "", list(sorted(labels.keys()))
+                )
+                self.metrics[metric_key] = found
+
+            try:
+                found.labels(**labels).set(value)
+                Log().log.info(f"Set labels {labels} to value {value} successful")
+
+            except ValueError as error:
+                # ignore errors sending other metrics
+                Log().log.error(
+                    f"Value error for metric key {metric_key}, error: {error}"
+                )
 
     def iterate(self, new_rows: pd.DataFrame):
         Log().log.info("iterate")
@@ -171,7 +201,11 @@ class MonitoringService:
 
         self._execute_monitoring()
 
-        self._process_metrics()
+        Log().log.info("_process_metrics features_and_target_monitor.metrics")
+        self._process_metrics(self.features_and_target_monitor.metrics())
+
+        Log().log.info("_process_metrics model_performance_monitor.metrics")
+        self._process_metrics(self.model_performance_monitor.metrics())
 
 
 SERVICE = MonitoringService()
@@ -190,4 +224,13 @@ def iterate():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8309, debug=True)
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-p",
+        "--port",
+        type=int,
+        default=8309,
+    )
+    args = parser.parse_args()
+    Log().log.info(f"args {args}")
+    app.run(host="0.0.0.0", port=args.port, debug=True)
