@@ -4,6 +4,7 @@ import json
 import subprocess
 import time
 
+import numpy as np
 import pandas as pd
 import requests
 
@@ -13,7 +14,8 @@ Log(AppConst.MOCK_REQUEST)
 AppPath()
 
 ONLINE_SERVING_API = "http://localhost:8172/inference"
-DELAY_SEC = 1
+MIN_DELAY_SEC = 1
+MAX_DELAY_SEC = 5
 
 
 def construct_request(row: pd.Series) -> dict:
@@ -83,8 +85,9 @@ def main(data_type: str, n_request: int = 1):
         row = request_data.iloc[idx]
         request = construct_request(row)
         send_request(request)
-        Log().log.info(f"Wait {DELAY_SEC} seconds")
-        time.sleep(DELAY_SEC)
+        delay_sec = np.random.uniform(low=MIN_DELAY_SEC, high=MAX_DELAY_SEC)
+        Log().log.info(f"Wait {delay_sec} seconds")
+        time.sleep(delay_sec)
 
 
 if __name__ == "__main__":
