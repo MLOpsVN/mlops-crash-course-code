@@ -16,3 +16,6 @@ deploy_dags:
 
 deploy_registered_model_file:
 	source ${ENV_FILE} && bash deployment/deploy.sh registered_model_file
+
+upload_training_set:
+	source ${ENV_FILE} && bash deployment/deploy.sh training_set

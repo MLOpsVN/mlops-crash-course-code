@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from typing import Optional
 
 import flask
 import pandas as pd
@@ -27,9 +26,38 @@ app.wsgi_app = DispatcherMiddleware(
 pd.set_option("display.max_columns", None)
 
 
+def read_reference_data() -> pd.DataFrame:
+    Log().log.info("read_reference_data")
+    train_x = pd.read_parquet(AppPath.TRAIN_X_PQ, engine="fastparquet")
+    train_y = pd.read_parquet(AppPath.TRAIN_Y_PQ, engine="fastparquet")
+    training_set = pd.merge(left=train_x, right=train_y, how="inner", on="index")
+    return training_set
+
+
+def read_label_data() -> pd.DataFrame:
+    Log().log.info("read_label_data")
+    label_file = AppPath.REQUEST_DATA
+    if not label_file.exists():
+        return None
+
+    label_data = pd.read_csv(label_file)
+    return label_data
+
+
+def merge_request_with_label(
+    new_rows: pd.DataFrame, label_data: pd.DataFrame
+) -> pd.DataFrame:
+    Log().log.info("_merge_request_with_label")
+    merged_data = pd.merge(
+        left=new_rows, right=label_data, how="inner", on="request_id"
+    )
+    merged_data["prediction"] = 1
+    return merged_data
+
+
 class MonitoringService:
     WINDOW_SIZE = 5
-    RUN_PERIOD_SEC = 15
+    RUN_PERIOD_SEC = 1
     DATETIME_COL = "datetime"
     NUMERICAL_COLS = ["conv_rate", "acc_rate", "avg_daily_trips"]
     CATEGORICAL_COLS = []
@@ -38,8 +66,11 @@ class MonitoringService:
 
     def __init__(self) -> None:
         self.next_run = None
-        self.reference_data = None
         self.current_data = None
+
+        # read reference data
+        self.reference_data = read_reference_data()
+        Log().log.info(f"reference_data {self.reference_data}")
 
         # init column mapping
         self.column_mapping = ColumnMapping(
@@ -49,40 +80,29 @@ class MonitoringService:
             categorical_features=self.CATEGORICAL_COLS,
             datetime=self.DATETIME_COL,
         )
+        Log().log.info(f"column_mapping {self.column_mapping}")
 
         # init monitoring
-        self.monitoring = ModelMonitoring(
+        self.features_and_target_monitor = ModelMonitoring(
             monitors=[
                 DataDriftMonitor(),
-                ClassificationPerformanceMonitor(),
+                CatTargetDriftMonitor(),
             ],
             options=[],
         )
-
-    def _read_label_data(self):
-        label_file = AppPath.REQUEST_DATA
-        if not label_file.exists():
-            return None
-
-        label_data = pd.read_csv(label_file)
-        return label_data
-
-    def _merge_request_with_label(
-        self, new_rows: pd.DataFrame, label_data: pd.DataFrame
-    ) -> pd.DataFrame:
-        merged_data = pd.merge(
-            left=new_rows, right=label_data, how="inner", on="request_id"
+        self.model_performance_monitor = ModelMonitoring(
+            monitors=[ClassificationPerformanceMonitor()],
+            options=[],
         )
-        merged_data["prediction"] = 1
-        return merged_data
 
     def _process_curr_data(self, new_rows: pd.DataFrame):
-        label_data = self._read_label_data()
+        Log().log.info("_process_curr_data")
+        label_data = read_label_data()
         if label_data is None:
             return False
         Log().log.info(label_data.info())
 
-        merged_data = self._merge_request_with_label(new_rows, label_data)
+        merged_data = merge_request_with_label(new_rows, label_data)
         Log().log.info(merged_data.info())
 
         if not self.current_data is None:
@@ -108,6 +128,7 @@ class MonitoringService:
         return True
 
     def _process_next_run(self):
+        Log().log.info("_process_next_run")
         if not self.next_run is None and self.next_run > datetime.now():
             Log().log.info(f"Next run at {self.next_run}")
             return False
@@ -115,23 +136,40 @@ class MonitoringService:
         self.next_run = datetime.now() + timedelta(seconds=self.RUN_PERIOD_SEC)
         return True
 
+    def _execute_monitoring(self):
+        Log().log.info("_execute_monitoring")
+        self.features_and_target_monitor.execute(
+            self.reference_data,
+            self.current_data,
+            self.column_mapping,
+        )
+        self.model_performance_monitor.execute(
+            self.current_data,
+            self.current_data,
+            self.column_mapping,
+        )
+
     def _process_metrics(self):
-        for metric, value, labels in self.monitoring.metrics():
+        Log().log.info("_process_metrics")
+        Log().log.info("features_and_target_monitor.metrics")
+        for metric, value, labels in self.features_and_target_monitor.metrics():
+            report = f"{metric.name} | {value} | {labels}"
+            Log().log.info(report)
+
+        Log().log.info("model_performance_monitor.metrics")
+        for metric, value, labels in self.model_performance_monitor.metrics():
             report = f"{metric.name} | {value} | {labels}"
             Log().log.info(report)
 
     def iterate(self, new_rows: pd.DataFrame):
+        Log().log.info("iterate")
         if not self._process_curr_data(new_rows):
             return
 
         if not self._process_next_run():
             return
 
-        self.monitoring.execute(
-            self.reference_data,
-            self.current_data,
-            self.column_mapping,
-        )
+        self._execute_monitoring()
 
         self._process_metrics()
 

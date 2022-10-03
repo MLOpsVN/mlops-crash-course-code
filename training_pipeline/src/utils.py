@@ -31,8 +31,8 @@ class AppPath:
 
     TRAINING_PQ = ARTIFACTS / "training.parquet"
     TRAIN_X_PQ = ARTIFACTS / "train_x.parquet"
-    TEST_X_PQ = ARTIFACTS / "test_x.parquet"
     TRAIN_Y_PQ = ARTIFACTS / "train_y.parquet"
+    TEST_X_PQ = ARTIFACTS / "test_x.parquet"
     TEST_Y_PQ = ARTIFACTS / "test_y.parquet"
     RUN_INFO = ARTIFACTS / "run_info.json"
     EVALUATION_RESULT = ARTIFACTS / "evaluation.json"

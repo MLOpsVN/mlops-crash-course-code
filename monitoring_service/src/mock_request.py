@@ -72,8 +72,14 @@ def main(data_type: str, n_request: int = 1):
     #     raise Exception("Failed to run feast_materialize")
 
     Log().log.info(f"Send request to online serving API")
-    n_sent = min(n_request, request_data.shape[0])
-    for idx in range(n_sent):
+    if n_request != -1:
+        n_sending = min(n_request, request_data.shape[0])
+    else:
+        n_sending = request_data.shape[0]
+
+    Log().log.info(f"Start sending {n_sending} requests")
+    for idx in range(n_sending):
+        Log().log.info(f"Sending request {idx+1}/{n_sending}")
         row = request_data.iloc[idx]
         request = construct_request(row)
         send_request(request)
