@@ -105,7 +105,7 @@ if __name__ == "__main__":
         "-n",
         "--n_request",
         type=int,
-        default=5,
+        default=10,
     )
     args = parser.parse_args()
     Log().log.info(f"args {args}")
