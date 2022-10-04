@@ -6,6 +6,7 @@ services:
     restart: on-failure
     volumes:
       - ../data:/monitoring_service/data
+      - ../data_sources:/monitoring_service/data_sources
     command: python src/monitoring_service.py --port=$MONITORING_SERVICE_PORT
     ports:
       - $MONITORING_SERVICE_PORT:$MONITORING_SERVICE_PORT

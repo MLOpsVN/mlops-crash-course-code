@@ -2,6 +2,9 @@ SHELL=/bin/bash
 
 ENV_FILE="./deployment/.env"
 
+feast_teardown:
+	source ${ENV_FILE} && bash scripts/feast_helper.sh teardown
+
 feast_apply:
 	source ${ENV_FILE} && bash scripts/feast_helper.sh apply
 

@@ -30,10 +30,8 @@ pd.set_option("display.max_columns", None)
 
 def read_reference_data() -> pd.DataFrame:
     Log().log.info("read_reference_data")
-    train_x = pd.read_parquet(AppPath.TRAIN_X_PQ, engine="fastparquet")
-    train_y = pd.read_parquet(AppPath.TRAIN_Y_PQ, engine="fastparquet")
-    training_set = pd.merge(left=train_x, right=train_y, how="inner", on="index")
-    return training_set
+    reference_data = pd.read_parquet(AppPath.REFERENCE_PQ, engine="fastparquet")
+    return reference_data
 
 
 def read_label_data() -> pd.DataFrame:

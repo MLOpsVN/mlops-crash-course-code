@@ -1,10 +1,10 @@
 from typing import Any, Dict, List, Optional
-import uuid
 
 import bentoml
 import feast
 import mlflow
 import numpy as np
+import pandas as pd
 import requests
 from bentoml.io import JSON, NumpyNdarray
 from mlflow.models.signature import ModelSignature
@@ -14,6 +14,7 @@ from utils import *
 
 Log(AppConst.BENTOML_SERVICE)
 AppPath()
+pd.set_option("display.max_columns", None)
 
 MONITORING_SERVICE_API = "http://localhost:8309/iterate"
 

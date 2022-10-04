@@ -5,6 +5,7 @@ cmd=$1
 usage() {
     echo "feast_helper.sh <command>"
     echo "Available commands:"
+    echo " teardown             run feast teardown"
     echo " apply                run feast apply"
     echo " materialize          materialize offline to online"
 }
@@ -14,6 +15,11 @@ if [[ -z "$cmd" ]]; then
     usage
     exit 1
 fi
+
+teardown() {
+    cd feature_repo
+    feast teardown
+}
 
 apply() {
     cd feature_repo
@@ -28,6 +34,9 @@ materialize() {
 shift
 
 case $cmd in
+teardown)
+    teardown "$@"
+    ;;
 apply)
     apply "$@"
     ;;

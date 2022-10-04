@@ -15,7 +15,7 @@ AppPath()
 
 ONLINE_SERVING_API = "http://localhost:8172/inference"
 MIN_DELAY_SEC = 1
-MAX_DELAY_SEC = 5
+MAX_DELAY_SEC = 2
 
 
 def construct_request(row: pd.Series) -> dict:
@@ -63,6 +63,11 @@ def main(data_type: str, n_request: int = 1):
         os.remove(AppPath.FEAST_DATA_SOURCE)
     data_source.to_parquet(AppPath.FEAST_DATA_SOURCE, engine="fastparquet")
 
+    Log().log.info(f"run feast_teardown")
+    result = subprocess.run(["make", "feast_teardown"])
+    if result.returncode != 0:
+        raise Exception("Failed to run feast_teardown")
+
     Log().log.info(f"run feast_apply")
     result = subprocess.run(["make", "feast_apply"])
     if result.returncode != 0:
@@ -74,15 +79,12 @@ def main(data_type: str, n_request: int = 1):
         raise Exception("Failed to run feast_materialize")
 
     Log().log.info(f"Send request to online serving API")
-    if n_request != -1:
-        n_sending = min(n_request, request_data.shape[0])
-    else:
-        n_sending = request_data.shape[0]
 
-    Log().log.info(f"Start sending {n_sending} requests")
-    for idx in range(n_sending):
-        Log().log.info(f"Sending request {idx+1}/{n_sending}")
-        row = request_data.iloc[idx]
+    Log().log.info(f"Start sending {n_request} requests")
+    total_request = request_data.shape[0]
+    for idx in range(n_request):
+        Log().log.info(f"Sending request {idx+1}/{n_request}")
+        row = request_data.iloc[idx % total_request]
         request = construct_request(row)
         send_request(request)
         delay_sec = np.random.uniform(low=MIN_DELAY_SEC, high=MAX_DELAY_SEC)
@@ -103,7 +105,7 @@ if __name__ == "__main__":
         "-n",
         "--n_request",
         type=int,
-        default=10,
+        default=5,
     )
     args = parser.parse_args()
     Log().log.info(f"args {args}")

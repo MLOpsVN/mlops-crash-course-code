@@ -29,8 +29,7 @@ class AppPath:
     FEATURE_REPO = ROOT / "feature_repo"
     ARTIFACTS = ROOT / "artifacts"
 
-    TRAIN_X_PQ = DATA / "train_x.parquet"
-    TRAIN_Y_PQ = DATA / "train_y.parquet"
+    REFERENCE_PQ = DATA / "mock_normal_data.parquet"
     FEAST_DATA_SOURCE = DATA_SOURCES / "driver_stats.parquet"
     NORMAL_DATA = DATA / "mock_normal_data.parquet"
     DRIFT_DATA = DATA / "mock_drift_data.parquet"

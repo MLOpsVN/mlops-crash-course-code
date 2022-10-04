@@ -21,7 +21,6 @@ usage() {
     echo " build_push               build and push image"
     echo " dags                     deploy airflow dags"
     echo " registered_model_file    deploy registered model file to model_serving"
-    echo " training_set             upload train_x and train_y parquet files"
     echo "Available arguments:"
     echo " [dags dir]               airflow dags directory, for command dags only"
 }
@@ -64,23 +63,6 @@ deploy_registered_model_file() {
     cp "$registered_model_file" "$model_serving_artifacts_dir"
 }
 
-upload_training_set() {
-    train_x="./artifacts/train_x.parquet"
-    train_y="./artifacts/train_y.parquet"
-    if [[ ! -f "$train_x" ]]; then
-        echo "$train_x doesn't exist"
-        exit 1
-    fi
-    if [[ ! -f "$train_y" ]]; then
-        echo "$train_y doesn't exist"
-        exit 1
-    fi
-
-    monitoring_service_data_dir="../monitoring_service/data/"
-    cp "$train_x" "$monitoring_service_data_dir"
-    cp "$train_y" "$monitoring_service_data_dir"
-}
-
 shift
 
 case $cmd in
@@ -99,9 +81,6 @@ dags)
     ;;
 registered_model_file)
     deploy_registered_model_file "$@"
-    ;;
-training_set)
-    upload_training_set "$@"
     ;;
 *)
     echo -n "Unknown command: $cmd"
