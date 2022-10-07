@@ -110,8 +110,8 @@ class MonitoringService:
             curr_data: pd.DataFrame = pd.concat([self.current_data, merged_data])
         else:
             curr_data = merged_data
-        curr_size = curr_data.shape[0]
 
+        curr_size = curr_data.shape[0]
         if curr_size > self.WINDOW_SIZE:
             curr_data.drop(
                 index=list(range(0, curr_size - self.WINDOW_SIZE)), inplace=True
@@ -155,7 +155,6 @@ class MonitoringService:
 
         for metric, value, labels in evidently_metrics:
             metric_key = f"evidently:{metric.name}"
-            found = self.metrics.get(metric_key)
 
             if not labels:
                 labels = {}
@@ -164,6 +163,7 @@ class MonitoringService:
             if isinstance(value, str):
                 continue
 
+            found = self.metrics.get(metric_key)
             if found is None:
                 found = prometheus_client.Gauge(
                     metric_key, "", list(sorted(labels.keys()))
