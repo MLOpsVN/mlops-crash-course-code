@@ -104,7 +104,7 @@ def predict(request: np.ndarray) -> np.ndarray:
 )
 def inference(request: InferenceRequest, ctx: bentoml.Context) -> Dict[str, Any]:
     """
-    Example request: {"request_id": "1234", "driver_ids":[1001,1002,1003,1004,1005]}
+    Example request: {"request_id": "uuid-1", "driver_ids":[1001,1002,1003,1004,1005]}
     """
     Log().log.info(f"start inference")
     response = InferenceResponse()

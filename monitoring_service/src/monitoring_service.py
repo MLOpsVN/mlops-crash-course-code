@@ -85,17 +85,8 @@ class MonitoringService:
         Log().log.info(f"column_mapping {self.column_mapping}")
 
         # init monitoring
-        self.features_and_target_monitor = ModelMonitoring(
-            monitors=[
-                DataDriftMonitor(),
-                CatTargetDriftMonitor(),
-            ],
-            options=[],
-        )
-        self.model_performance_monitor = ModelMonitoring(
-            monitors=[ClassificationPerformanceMonitor()],
-            options=[],
-        )
+        self.features_and_target_monitor = ModelMonitoring(monitors=[DataDriftMonitor()])
+        self.model_performance_monitor = ModelMonitoring(monitors=[ClassificationPerformanceMonitor()])
 
         #
         self.hash = hashlib.sha256(
