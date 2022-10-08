@@ -6,7 +6,7 @@ import mlflow
 import numpy as np
 import pandas as pd
 import requests
-from bentoml.io import JSON, NumpyNdarray
+from bentoml.io import JSON
 from mlflow.models.signature import ModelSignature
 from pydantic import BaseModel
 
@@ -77,6 +77,13 @@ svc = bentoml.Service(bentoml_model.tag.name, runners=[bentoml_runner])
 fs = feast.FeatureStore(repo_path=AppPath.FEATURE_REPO)
 
 
+def predict(request: np.ndarray) -> np.ndarray:
+    Log().log.info(f"start predict")
+    result = bentoml_runner.predict.run(request)
+    Log().log.info(f"result: {result}")
+    return result
+
+
 class InferenceRequest(BaseModel):
     request_id: str
     driver_ids: List[int]
@@ -85,17 +92,6 @@ class InferenceRequest(BaseModel):
 class InferenceResponse(BaseModel):
     prediction: Optional[float]
     error: Optional[str]
-
-
-@svc.api(input=NumpyNdarray(), output=NumpyNdarray())
-def predict(request: np.ndarray) -> np.ndarray:
-    """
-    Example request: [[0.5, 0.5, 500]]
-    """
-    Log().log.info(f"start predict")
-    result = bentoml_runner.predict.run(request)
-    Log().log.info(f"result: {result}")
-    return result
 
 
 @svc.api(
@@ -123,7 +119,7 @@ def inference(request: InferenceRequest, ctx: bentoml.Context) -> Dict[str, Any]
         input_features = input_features[feature_list]
         Log().log.info(f"input_features: {input_features}")
 
-        result = predict(input_features[sorted(input_features)])
+        result = predict(input_features)
         df["prediction"] = result
         best_idx = df["prediction"].argmax()
         best_driver_id = df["driver_id"].iloc[best_idx]
