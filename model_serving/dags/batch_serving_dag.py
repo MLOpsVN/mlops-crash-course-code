@@ -17,7 +17,7 @@ with DAG(
     schedule_interval="@once",
     start_date=pendulum.datetime(2022, 1, 1, tz="UTC"),
     catchup=False,
-    tags=["batch_serving_pipeline"],
+    tags=["model_serving"],
 ) as dag:
     feature_store_init_task = DockerOperator(
         task_id="feature_store_init_task",

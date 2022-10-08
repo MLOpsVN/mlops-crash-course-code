@@ -22,7 +22,7 @@ usage() {
     echo " dags                     deploy airflow dags"
     echo " registered_model_file    deploy registered model file to model_serving"
     echo "Available arguments:"
-    echo " [dags dir]           airflow dags directory, for command dags only"
+    echo " [dags dir]               airflow dags directory, for command dags only"
 }
 
 if [[ -z "$cmd" ]]; then

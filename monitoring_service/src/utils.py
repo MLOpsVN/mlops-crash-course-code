@@ -4,7 +4,6 @@ import os
 import sys
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
 
@@ -13,40 +12,28 @@ load_dotenv()
 
 class AppConst:
     LOG_LEVEL = logging.DEBUG
-    BENTOML_MODEL_SAVING = "bentoml_model_saving"
-    BENTOML_SERVICE = "bentoml_service"
-    DATA_EXTRACTION = "data_extraction"
-    BATCH_PREDICTION = "batch_prediction"
+    MONITORING_SERVICE = "monitoring_service"
+    MOCK_REQUEST = "mock_request"
+
+
+class DataType:
+    NORMAL = "normal"
+    DRIFT = "drift"
 
 
 class AppPath:
-    # set MODEL_SERVING_DIR in dev environment for quickly testing the code
-    ROOT = Path(os.environ.get("MODEL_SERVING_DIR", "/model_serving"))
+    # set MONITORING_SERVICE_DIR in dev environment for quickly testing the code
+    ROOT = Path(os.environ.get("MONITORING_SERVICE_DIR", "/monitoring_service"))
     DATA = ROOT / "data"
     DATA_SOURCES = ROOT / "data_sources"
     FEATURE_REPO = ROOT / "feature_repo"
     ARTIFACTS = ROOT / "artifacts"
 
-    BATCH_INPUT_PQ = ARTIFACTS / "batch_input.parquet"
-    BATCH_OUTPUT_PQ = ARTIFACTS / "batch_output.parquet"
-
-    def __init__(self) -> None:
-        AppPath.ARTIFACTS.mkdir(parents=True, exist_ok=True)
-
-
-class Config:
-    def __init__(self) -> None:
-        import numpy as np
-
-        self.feature_dict = {
-            "conv_rate": np.float64,
-            "acc_rate": np.float64,
-            "avg_daily_trips": np.int64,
-            "trip_completed": np.int64,
-        }
-        self.mlflow_tracking_uri = os.environ.get("MLFLOW_TRACKING_URI")
-        self.batch_input_file = os.environ.get("BATCH_INPUT_FILE")
-        self.registered_model_file = os.environ.get("REGISTERED_MODEL_FILE")
+    REFERENCE_PQ = DATA / "mock_normal_data.parquet"
+    FEAST_DATA_SOURCE = DATA_SOURCES / "driver_stats.parquet"
+    NORMAL_DATA = DATA / "mock_normal_data.parquet"
+    DRIFT_DATA = DATA / "mock_drift_data.parquet"
+    REQUEST_DATA = DATA / "mock_request_data.csv"
 
 
 class Log:
@@ -66,21 +53,6 @@ class Log:
         logger.addHandler(stream_handler)
         logger.setLevel(AppConst.LOG_LEVEL)
         return logger
-
-
-# the encoder helps to convert NumPy types in source data to JSON-compatible types
-class NumpyEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, np.void):
-            return None
-
-        if isinstance(obj, (np.generic, np.bool_)):
-            return obj.item()
-
-        if isinstance(obj, np.ndarray):
-            return obj.tolist()
-
-        return obj
 
 
 def inspect_dir(path):

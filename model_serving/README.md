@@ -4,11 +4,6 @@
 # Go to data pipeline and deploy feature repo
 cd ../data_pipeline
 make deploy_feature_repo
-cd ../training_pipeline
-
-# Go to training pipeline and deploy registered model file
-cd ../training_pipeline
-make deploy_registered_model_file
 cd ../model_serving
 
 # Clone .env-example and rename to .env in both model_serving and model_serving/deployment folders

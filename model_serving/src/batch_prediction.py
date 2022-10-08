@@ -1,5 +1,7 @@
-from utils import *
 import mlflow
+from mlflow.models.signature import ModelSignature
+
+from utils import *
 
 Log(AppConst.BATCH_PREDICTION)
 AppPath()
@@ -19,9 +21,22 @@ def batch_prediction():
 
     mlflow.set_tracking_uri(config.mlflow_tracking_uri)
     mlflow_model = mlflow.pyfunc.load_model(model_uri=model_uri)
+    Log().log.info(mlflow_model.__dict__)
 
     # Load data
     batch_df = load_df(AppPath.BATCH_INPUT_PQ)
+
+    # restructure features
+    model_signature: ModelSignature = mlflow_model.metadata.signature
+    feature_list = []
+    for name in model_signature.inputs.input_names():
+        feature_list.append(name)
+    Log().log.info(f"feature_list: {feature_list}")
+
+    batch_df = batch_df[feature_list]
+    Log().log.info(f"batch_df: {batch_df}")
+
+    # Predict
     preds = mlflow_model.predict(batch_df)
     batch_df["pred"] = preds
 

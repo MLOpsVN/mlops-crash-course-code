@@ -1,6 +1,9 @@
 .dockerignore
 __pycache__
-artifacts
 dev_requirements.txt
-dags
+dashboards
 data
+data_sources
+feature_repo
+nbs
+scripts

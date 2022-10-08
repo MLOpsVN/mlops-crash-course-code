@@ -1,0 +1,13 @@
+version: "3.7"
+services:
+  monitoring:
+    image: $DOCKER_USER/mlops_crash_course/monitoring_service:latest
+    container_name: monitoring_service
+    restart: on-failure
+    volumes:
+      - ../data:/monitoring_service/data
+      - ../data_sources:/monitoring_service/data_sources
+    command: python src/monitoring_service.py --port=$MONITORING_SERVICE_PORT
+    ports:
+      - $MONITORING_SERVICE_PORT:$MONITORING_SERVICE_PORT
+    network_mode: host
