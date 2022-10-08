@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    environment { 
-        CC = 'clang'
-    }
 
     stages {
         stage('build data pipeline') {
@@ -10,14 +7,7 @@ pipeline {
 
             steps {
                 echo 'Building data pipeline..'
-            }
-        }
-
-        stage('build training pipeline') {
-            when {changeset "training_pipeline/*.*" }
-
-            steps {
-                echo 'Building training pipeline..'
+                make build_image
             }
         }
 
@@ -25,15 +15,7 @@ pipeline {
             when {changeset "data_pipeline/*.*" }
 
             steps {
-                echo 'Testing data pipeline..'
-            }
-        }
-
-        stage('test training pipeline') {
-            when {changeset "training_pipeline/*.*" }
-
-            steps {
-                echo 'Testing training pipeline..'
+                echo 'Testing data pipeline..' 
             }
         }
 
@@ -41,15 +23,7 @@ pipeline {
             when {changeset "data_pipeline/*.*" }
 
             steps {
-                echo 'Deploying data pipeline..'
-            }
-        }
-
-        stage('deploy training pipeline') {
-            when {changeset "training_pipeline/*.*" }
-
-            steps {
-                echo 'Deploying training pipeline..'
+                make deploy_dags
             }
         }
     }
