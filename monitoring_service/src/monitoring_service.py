@@ -5,7 +5,6 @@ import flask
 import pandas as pd
 import prometheus_client
 from evidently.model_monitoring import (
-    CatTargetDriftMonitor,
     ClassificationPerformanceMonitor,
     DataDriftMonitor,
     ModelMonitoring,
@@ -84,8 +83,12 @@ class MonitoringService:
         Log().log.info(f"column_mapping {self.column_mapping}")
 
         # init monitoring
-        self.features_and_target_monitor = ModelMonitoring(monitors=[DataDriftMonitor()])
-        self.model_performance_monitor = ModelMonitoring(monitors=[ClassificationPerformanceMonitor()])
+        self.features_and_target_monitor = ModelMonitoring(
+            monitors=[DataDriftMonitor()]
+        )
+        self.model_performance_monitor = ModelMonitoring(
+            monitors=[ClassificationPerformanceMonitor()]
+        )
 
     def _process_curr_data(self, new_rows: pd.DataFrame):
         Log().log.info("_process_curr_data")
@@ -98,9 +101,12 @@ class MonitoringService:
         Log().log.info(merged_data.info())
 
         if not self.current_data is None:
-            curr_data: pd.DataFrame = pd.concat([self.current_data, merged_data])
+            curr_data: pd.DataFrame = pd.concat(
+                [self.current_data, merged_data], ignore_index=True
+            )
         else:
             curr_data = merged_data
+        Log().log.info(curr_data.info())
 
         curr_size = curr_data.shape[0]
         if curr_size > self.WINDOW_SIZE:
@@ -108,6 +114,7 @@ class MonitoringService:
                 index=list(range(0, curr_size - self.WINDOW_SIZE)), inplace=True
             )
             curr_data.reset_index(drop=True, inplace=True)
+        Log().log.info(curr_data.info())
 
         self.current_data = curr_data
         Log().log.info(f"current_data {self.current_data}")
@@ -161,7 +168,9 @@ class MonitoringService:
 
             try:
                 found.labels(**labels).set(value)
-                Log().log.info(f"Set labels {labels} to value {value} successful")
+                Log().log.info(
+                    f"Metric {metric_key}: Set {labels} to {value} successful"
+                )
 
             except ValueError as error:
                 # ignore errors sending other metrics

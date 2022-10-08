@@ -58,7 +58,7 @@ def main(data_type: str, n_request: int = 1):
     data_source = pd.read_parquet(data_path, engine="fastparquet")
     request_data = pd.read_csv(AppPath.REQUEST_DATA)
 
-    Log().log.info(f"write data_source to data_sources")
+    Log().log.info(f"write data_source to {AppPath.FEAST_DATA_SOURCE}")
     if AppPath.FEAST_DATA_SOURCE.exists():
         os.remove(AppPath.FEAST_DATA_SOURCE)
     data_source.to_parquet(AppPath.FEAST_DATA_SOURCE, engine="fastparquet")
