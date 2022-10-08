@@ -1,6 +1,5 @@
 import argparse
 from datetime import datetime, timedelta
-import hashlib
 
 import flask
 import pandas as pd
@@ -88,14 +87,6 @@ class MonitoringService:
         self.features_and_target_monitor = ModelMonitoring(monitors=[DataDriftMonitor()])
         self.model_performance_monitor = ModelMonitoring(monitors=[ClassificationPerformanceMonitor()])
 
-        #
-        self.hash = hashlib.sha256(
-            pd.util.hash_pandas_object(self.reference_data).values
-        ).hexdigest()
-        self.hash_metric = prometheus_client.Gauge(
-            "evidently:reference_dataset_hash", "", labelnames=["hash"]
-        )
-
     def _process_curr_data(self, new_rows: pd.DataFrame):
         Log().log.info("_process_curr_data")
         label_data = read_label_data()
@@ -151,8 +142,6 @@ class MonitoringService:
         )
 
     def _process_metrics(self, evidently_metrics):
-        self.hash_metric.labels(hash=self.hash).set(1)
-
         for metric, value, labels in evidently_metrics:
             metric_key = f"evidently:{metric.name}"
 
