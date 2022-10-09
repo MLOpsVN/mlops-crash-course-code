@@ -30,11 +30,3 @@ with DAG(
         **DefaultConfig.DEFAULT_DOCKER_OPERATOR_ARGS,
         command="/bin/bash -c 'cd src/stream_to_stores && python ingest.py --store offline'",
     )
-
-    # stop_stream_task = DockerOperator(
-    #     task_id='stop_stream_task',
-    #     **DefaultConfig.DEFAULT_DOCKER_OPERATOR_ARGS,
-    #     command="/bin/bash -c 'cd src/stream_to_stores && python ingest.py --mode teardown'",
-    # )
-
-    # to create dag and pass processor to stop_stream_task

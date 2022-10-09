@@ -3,7 +3,7 @@ pipeline {
 
     stages {
         stage('build data pipeline') {
-            when {changeset "data_pipeline/*" }
+            when {changeset "data_pipeline/**" }
 
             steps {
                 echo 'Building data pipeline..'
@@ -12,7 +12,7 @@ pipeline {
         }
 
         stage('test data pipeline') {
-            when {changeset "data_pipeline/*" }
+            when {changeset "data_pipeline/**" }
 
             steps {
                 echo 'Testing data pipeline..' 
@@ -20,7 +20,7 @@ pipeline {
         }
 
         stage('deploy data pipeline') {
-            when {changeset "data_pipeline/*" }
+            when {changeset "data_pipeline/**" }
 
             steps {
                 make deploy_dags
