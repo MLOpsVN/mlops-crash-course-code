@@ -151,7 +151,11 @@ training_pipeline/artifacts/*
 model_deployment/data_sources
 <<<<<<< HEAD
 model_deployment/feature_repo
+<<<<<<< HEAD
 =======
 model_deployment/feature_repo
+>>>>>>> quandv/fix_bug_materialize
+>>>>>>> main
+=======
 >>>>>>> quandv/fix_bug_materialize
 >>>>>>> main

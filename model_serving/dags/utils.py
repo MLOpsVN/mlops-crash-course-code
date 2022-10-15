@@ -49,4 +49,8 @@ class DefaultConfig:
                 type="bind",
             ),
         ],
+<<<<<<< HEAD
     }
+=======
+    }
+>>>>>>> main

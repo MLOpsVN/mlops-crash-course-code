@@ -6,6 +6,11 @@ cd ../data_pipeline
 make deploy_feature_repo
 cd ../monitoring_service
 
+<<<<<<< HEAD
+=======
+# Clone .env-example and rename to .env in both monitoring_service and monitoring_service/deployment folders
+
+>>>>>>> main
 # Build
 make build_image
 
