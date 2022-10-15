@@ -8,11 +8,12 @@ node {
 pipeline {
     agent { 
         docker { 
+            label 'docker'
             image 'python:3.9' 
-            args '-v /var/run/docker.sock:/var/run/docker.sock\
-             -v /usr/local/bin/docker:/usr/local/bin/docker\
-             --privileged true\
-             --user root'
+            // args '-v /var/run/docker.sock:/var/run/docker.sock\
+            //  -v /usr/bin/docker:/usr/bin/docker\
+            //  --privileged\
+            //  --user root'
         } 
     }
 
