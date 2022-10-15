@@ -1,18 +1,12 @@
-def user_id
-def group_id
-node {
-  user_id = sh(returnStdout: true, script: 'id -u').trim()
-  group_id = sh(returnStdout: true, script: 'id -g').trim()
-}
-
 pipeline {
     agent { 
         docker { 
-            image 'python:3.9' 
-            args '-v /var/run/docker.sock:/var/run/docker.sock\
-             -v /usr/bin/docker:/usr/bin/docker\
-             --privileged\
-             -u root:root'
+            image 'python:3.9'
+            reuseNode true
+            // args '-v /var/run/docker.sock:/var/run/docker.sock\
+            //  -v /usr/bin/docker:/usr/bin/docker\
+            //  --privileged\
+            //  -u root:root'
         } 
     }
 
