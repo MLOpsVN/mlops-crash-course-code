@@ -11,7 +11,7 @@ pipeline {
 
             steps {
                 echo 'Building data pipeline..'
-                sh 'cd data_pipeline/deployment && make build_image'
+                sh 'cd data_pipeline && make build_image'
             }
         }
 
@@ -27,7 +27,7 @@ pipeline {
             when {changeset "data_pipeline/**" }
 
             steps {
-                sh 'cd data_pipeline/deployment && make deploy_dags'
+                sh 'cd data_pipeline && make deploy_dags'
             }
         }
     }
