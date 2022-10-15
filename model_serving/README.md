@@ -6,8 +6,6 @@ cd ../data_pipeline
 make deploy_feature_repo
 cd ../model_serving
 
-# Clone .env-example and rename to .env in both model_serving and model_serving/deployment folders
-
 # To test source files at local before running in Airflow
 cd feature_repo
 feast apply

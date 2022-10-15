@@ -11,4 +11,5 @@ def get_logger():
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
     logger.setLevel(logging.INFO)
+
     return logger

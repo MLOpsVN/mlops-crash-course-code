@@ -1,35 +1,38 @@
 #!/bin/bash
 
 cmd=$1
-tag=$2
 
 # dockerhub username
 DOCKER_USER="mlopsvn"
 PROJECT="mlops_crash_course"
-IMAGE_NAME="stream_emitting"
 
 usage() {
-    echo "deploy.sh"
+    echo "deploy.sh <command>"
+    echo "Available commands:"
+    echo " start                start emiting"
+    echo " stop                 stop emiting"
 }
 
-build() {
-    docker build --tag $DOCKER_USER/$PROJECT/$IMAGE_NAME:$tag .
+if [[ -z "$cmd" ]]; then
+    echo "Missing command"
+    usage
+    exit 1
+fi
+
+start_emit() {
+    docker-compose -f docker-compose.yaml up
 }
 
-push() {
-    docker push $DOCKER_USER/$PROJECT/$IMAGE_NAME:$tag
+stop_emit() {
+    docker-compose -f docker-compose.yaml down
 }
 
 case $cmd in 
-    build)
-        build
+    start)
+        start_emit
         ;;
-    push)
-        push
-        ;;
-    all)
-        build
-        push
+    stop)
+        stop_emit
         ;;
     *)
         echo -n "Unknown command: $cmd"
