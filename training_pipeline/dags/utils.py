@@ -5,8 +5,13 @@ from airflow.models import Variable
 from docker.types import Mount
 
 
+class AppConst:
+    DOCKER_USER = Variable.get("DOCKER_USER", "mlopsvn")
+
+
 class AppPath:
-    TRAINING_PIPELINE_DIR = Path(Variable.get("TRAINING_PIPELINE_DIR"))
+    MLOPS_CRASH_COURSE_CODE_DIR = Path(Variable.get("MLOPS_CRASH_COURSE_CODE_DIR"))
+    TRAINING_PIPELINE_DIR = MLOPS_CRASH_COURSE_CODE_DIR / "training_pipeline"
     FEATURE_REPO = TRAINING_PIPELINE_DIR / "feature_repo"
     ARTIFACTS = TRAINING_PIPELINE_DIR / "artifacts"
 
@@ -19,7 +24,7 @@ class DefaultConfig:
     }
 
     DEFAULT_DOCKER_OPERATOR_ARGS = {
-        "image": "mlopsvn/mlops_crash_course/training_pipeline:latest",
+        "image": f"{AppConst.DOCKER_USER}/mlops_crash_course/training_pipeline:latest",
         "api_version": "auto",
         "auto_remove": True,
         "network_mode": "host",

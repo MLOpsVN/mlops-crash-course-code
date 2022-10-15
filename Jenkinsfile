@@ -3,36 +3,36 @@ pipeline {
 
     stages {
         stage('build model serving') {
-            when {changeset "model_deployment/**" }
+            when {changeset "model_serving/**" }
 
             steps {
                 echo 'Building model serving..'
-                sh 'make build_image'
+                sh 'cd model_serving && make build_image'
             }
         }
 
         stage('test model serving') {
-            when {changeset "model_deployment/**" }
+            when {changeset "model_serving/**" }
 
             steps {
-                echo 'Testing model serving..' # (1)
+                echo 'Testing model serving..' // (1)
             }
         }
 
-        parallel { # (2)
+        parallel { // (2)
             stage('deploy serving pipeline') {
-                when {changeset "model_deployment/**" }
+                when {changeset "model_serving/**" }
 
                 steps {
-                    sh 'make deploy_dags'
+                    sh 'cd model_serving && make deploy_dags'
                 }
             }
 
             stage('deploy online serving API') {
-                // when {changeset "model_serving/**" }
+                when {changeset "model_serving/**" }
 
                 steps {
-                    sh 'make compose_up'
+                    sh 'cd model_serving && make compose_up'
                 }
             }
         }

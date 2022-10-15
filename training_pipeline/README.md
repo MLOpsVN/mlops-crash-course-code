@@ -17,6 +17,6 @@ python <source_file>
 make build_image && make deploy_dags
 
 # Go to airflow UI
-# Set variable TRAINING_PIPELINE_DIR=path/to/mlops-crash-course-code/training_pipeline
+# Set variable MLOPS_CRASH_COURSE_CODE_DIR=path/to/mlops-crash-course-code
 # Run dags
 ```

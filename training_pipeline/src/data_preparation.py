@@ -1,9 +1,3 @@
-"""
-Reference: https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning
-
-Data preparation: The data is prepared for the ML task. This preparation involves data cleaning, where you split the data into training, validation, and test sets. You also apply data transformations and feature engineering to the model that solves the target task. The output of this step are the data splits in the prepared format.
-"""
-
 import pandas as pd
 from sklearn.model_selection import train_test_split
 

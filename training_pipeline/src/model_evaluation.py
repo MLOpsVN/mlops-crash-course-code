@@ -1,9 +1,3 @@
-"""
-Reference: https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning
-
-Model evaluation: The model is evaluated on a holdout test set to evaluate the model quality. The output of this step is a set of metrics to assess the quality of the model.
-"""
-
 import mlflow
 import numpy as np
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
@@ -27,6 +21,9 @@ def evaluate_model():
 
     run_info = RunInfo.load(AppPath.RUN_INFO)
     Log().log.info(f"loaded run_info {run_info}")
+
+    config = Config()
+    mlflow.set_tracking_uri(config.mlflow_tracking_uri)
 
     model = mlflow.pyfunc.load_model(
         f"runs:/{run_info.run_id}/{AppConst.MLFLOW_MODEL_PATH_PREFIX}"

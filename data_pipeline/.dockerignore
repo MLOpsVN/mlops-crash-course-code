@@ -1,7 +1,6 @@
 .dockerignore
 __pycache__
+dev_requirements.txt
 dags
-data_sources
 examples
 feature_repo
-dev_requirements.txt

@@ -1,0 +1,10 @@
+black==22.6.0
+evidently==0.1.57.dev0
+fastparquet==0.8.3
+feast[redis]==0.24.0
+Flask==2.2.2
+jupyterlab==3.4.5
+pandas==1.4.4
+prometheus_client==0.14.1
+pyspark==3.0.1
+python-dotenv==0.21.0

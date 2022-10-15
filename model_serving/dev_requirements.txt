@@ -1,0 +1,10 @@
+apache-airflow==2.3.4
+apache-airflow-providers-docker==3.1.0
+bentoml==1.0.5
+black==22.6.0
+fastparquet==0.8.3
+feast[redis]==0.24.0
+mlflow==1.28.0
+pandas==1.4.4
+pyspark==3.0.1
+scikit-learn==1.1.2

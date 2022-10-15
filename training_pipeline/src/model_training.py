@@ -1,8 +1,3 @@
-"""
-Reference: https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning
-
-Model training: The data scientist implements different algorithms with the prepared data to train various ML models. In addition, you subject the implemented algorithms to hyperparameter tuning to get the best performing ML model. The output of this step is a trained model.
-"""
 import uuid
 
 import mlflow
@@ -45,16 +40,16 @@ def train_model():
     Log().log.info("start train_model")
     inspect_curr_dir()
 
-    # Setup data
-    train_x = load_df(AppPath.TRAIN_X_PQ)
-    train_y = load_df(AppPath.TRAIN_Y_PQ)
-
     # Setup tracking server
     config = Config()
     mlflow.set_tracking_uri(config.mlflow_tracking_uri)
     mlflow.set_experiment(config.experiment_name)
     Log().log.info((mlflow.get_tracking_uri(), mlflow.get_artifact_uri()))
     mlflow.sklearn.autolog()
+
+    # Load data
+    train_x = load_df(AppPath.TRAIN_X_PQ)
+    train_y = load_df(AppPath.TRAIN_Y_PQ)
 
     # Training
     model = ElasticNet(
@@ -66,7 +61,6 @@ def train_model():
 
     # Log metadata
     mlflow.set_tag("mlflow.runName", str(uuid.uuid1())[:8])
-    mlflow.log_param("features", list(config.feature_dict.keys()))
     mlflow.log_param("alpha", config.alpha)
     mlflow.log_param("l1_ratio", config.l1_ratio)
     signature = infer_signature(train_x, model.predict(train_x))

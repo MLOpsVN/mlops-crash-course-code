@@ -14,12 +14,15 @@ if [[ -z "$DOCKER_USER" ]]; then
 fi
 
 usage() {
-    echo "deploy.sh <command>"
+    echo "deploy.sh <command> <arguments>"
     echo "Available commands:"
-    echo " build                build image"
-    echo " push                 push image"
-    echo " build_push           build and push image"
-    echo " dags                 deploy airflow dags"
+    echo " build                    build image"
+    echo " push                     push image"
+    echo " build_push               build and push image"
+    echo " dags                     deploy airflow dags"
+    echo " registered_model_file    deploy registered model file to model_serving"
+    echo "Available arguments:"
+    echo " [dags dir]               airflow dags directory, for command dags only"
 }
 
 if [[ -z "$cmd" ]]; then
@@ -39,9 +42,25 @@ push() {
 }
 
 deploy_dags() {
-    dags_dir=$1
-    mkdir -p "$dags_dir"
-    cp dags/* "$dags_dir"
+    if [[ -z "$DAGS_DIR" ]]; then
+        echo "Missing DAGS_DIR env var"
+        usage
+        exit 1
+    fi
+
+    mkdir -p "$DAGS_DIR"
+    cp dags/* "$DAGS_DIR"
+}
+
+deploy_registered_model_file() {
+    registered_model_file="./artifacts/registered_model_version.json"
+    if [[ ! -f "$registered_model_file" ]]; then
+        echo "$registered_model_file doesn't exist"
+        exit 1
+    fi
+
+    model_serving_artifacts_dir="../model_serving/artifacts/"
+    cp "$registered_model_file" "$model_serving_artifacts_dir"
 }
 
 shift
@@ -59,6 +78,9 @@ build_push)
     ;;
 dags)
     deploy_dags "$@"
+    ;;
+registered_model_file)
+    deploy_registered_model_file "$@"
     ;;
 *)
     echo -n "Unknown command: $cmd"

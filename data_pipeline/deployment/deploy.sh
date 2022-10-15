@@ -20,6 +20,7 @@ usage() {
     echo " push                 push image"
     echo " build_push           build and push image"
     echo " dags                 deploy airflow dags"
+    echo " feature_repo         deploy feature repo and related scripts"
 }
 
 if [[ -z "$cmd" ]]; then
@@ -39,17 +40,26 @@ push() {
 }
 
 deploy_dags() {
-    dags_dir=$1
-    mkdir -p "$dags_dir"
-    cp dags/* "$dags_dir"
+    if [[ -z "$DAGS_DIR" ]]; then
+        echo "Missing DAGS_DIR env var"
+        usage
+        exit 1
+    fi
+
+    mkdir -p "$DAGS_DIR"
+    cp dags/* "$DAGS_DIR"
 }
 
 deploy_feature_repo() {
     rsync -avr data_sources ../training_pipeline
     rsync -avr feature_repo ../training_pipeline --exclude registry
 
-    rsync -avr data_sources ../model_deployment
-    rsync -avr feature_repo ../model_deployment --exclude registry
+    rsync -avr data_sources ../model_serving
+    rsync -avr feature_repo ../model_serving --exclude registry
+
+    rsync -avr data_sources ../monitoring_service
+    rsync -avr feature_repo ../monitoring_service --exclude registry
+    rsync -avr scripts ../monitoring_service
 }
 
 shift

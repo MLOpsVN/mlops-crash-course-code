@@ -6,12 +6,10 @@ store = FeatureStore(repo_path="../feature_repo")
 
 entity_df = pd.DataFrame.from_dict(
     {
-        "driver_id": [1001, 1002, 1003, 1004, 1001],
+        "driver_id": [1001, 1002, 1003],
         "datetime": [
-            datetime(2022, 4, 12, 10, 59, 42),
-            datetime(2022, 4, 12, 8, 12, 10),
-            datetime(2022, 4, 12, 16, 40, 26),
-            datetime(2022, 4, 12, 15, 1, 12),
+            datetime(2022, 5, 11, 11, 59, 59),
+            datetime(2022, 6, 12, 1, 15, 10),
             datetime.now(),
         ],
     }

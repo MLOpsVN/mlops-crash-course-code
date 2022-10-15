@@ -1,9 +1,3 @@
-"""
-Reference: https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning
-
-Data extraction: You select and integrate the relevant data from various data sources for the ML task.
-"""
-
 import feast
 import pandas as pd
 
@@ -17,15 +11,15 @@ def extract_data():
     Log().log.info("start extract_data")
     inspect_curr_dir()
 
-    # Load driver order data
-    inspect_dir(AppPath.DATA)
-    orders = pd.read_csv(AppPath.DATA / "driver_orders.csv", sep="\t")
-    orders["event_timestamp"] = pd.to_datetime(orders["event_timestamp"])
-
     # Connect to your feature store provider
     inspect_dir(AppPath.DATA_SOURCES)
     inspect_dir(AppPath.FEATURE_REPO)
     fs = feast.FeatureStore(repo_path=AppPath.FEATURE_REPO)
+
+    # Load driver order data
+    inspect_dir(AppPath.DATA)
+    orders = pd.read_csv(AppPath.DATA / "driver_orders.csv", sep="\t")
+    orders["event_timestamp"] = pd.to_datetime(orders["event_timestamp"])
 
     # Retrieve training data
     training_df = fs.get_historical_features(
@@ -48,8 +42,6 @@ def extract_data():
     # Write to file
     to_parquet(training_df, AppPath.TRAINING_PQ)
     inspect_dir(AppPath.TRAINING_PQ.parent)
-
-    Log().log.info("end extract_data")
 
 
 if __name__ == "__main__":
