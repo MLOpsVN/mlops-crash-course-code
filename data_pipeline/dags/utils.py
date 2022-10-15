@@ -13,3 +13,5 @@ class DefaultConfig:
         "api_version": "auto",
         "auto_remove": True,
     }
+
+    
