@@ -1,5 +1,5 @@
 pipeline {
-    agent { any { image 'python:3.9-slim' } }
+    agent { any { image 'python:3.9' } }
 
     stages {
         stage('build data pipeline') {
