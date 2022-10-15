@@ -19,20 +19,22 @@ pipeline {
             }
         }
 
-        parallel { // (2)
-            stage('deploy serving pipeline') {
-                when {changeset "model_serving/**" }
+        stage('deploy model serving') {
+            parallel { // (2)
+                stage('batch serving pipeline') {
+                    when {changeset "model_serving/**" }
 
-                steps {
-                    sh 'cd model_serving && make deploy_dags'
+                    steps {
+                        sh 'cd model_serving && make deploy_dags'
+                    }
                 }
-            }
 
-            stage('deploy online serving API') {
-                when {changeset "model_serving/**" }
+                stage('online serving API') {
+                    when {changeset "model_serving/**" }
 
-                steps {
-                    sh 'cd model_serving && make compose_up'
+                    steps {
+                        sh 'cd model_serving && make compose_up'
+                    }
                 }
             }
         }
