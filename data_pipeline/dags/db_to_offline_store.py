@@ -38,3 +38,4 @@ with DAG(
     )
 
     ingest_task >> clean_task >> explore_and_validate_task
+    
