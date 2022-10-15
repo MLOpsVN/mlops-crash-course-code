@@ -9,7 +9,7 @@ pipeline {
     agent { 
         docker { 
             image 'python:3.9' 
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
+            args '-v /var/run/docker.sock:/var/run/docker.sock -v /usr/local/bin/docker:/usr/local/bin/docker'
         } 
     }
 
@@ -18,10 +18,6 @@ pipeline {
             when {changeset "data_pipeline/**" }
 
             steps {
-                echo 'user_id'
-                echo user_id
-                echo 'group_id'
-                echo group_id
                 echo 'Building data pipeline..'
                 sh 'make build_image'
             }
