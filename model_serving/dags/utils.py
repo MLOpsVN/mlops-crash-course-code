@@ -50,7 +50,11 @@ class DefaultConfig:
             ),
         ],
 <<<<<<< HEAD
+<<<<<<< HEAD
     }
 =======
     }
 >>>>>>> main
+=======
+    }
+>>>>>>> fdee7ba7e9f55a70d4842fc5eace56a34e275bf6

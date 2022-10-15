@@ -25,13 +25,6 @@ class DefaultConfig:
         "image": f"{AppConst.DOCKER_USER}/mlops_crash_course/data_pipeline:latest",
         "api_version": "auto",
         "auto_remove": True,
-<<<<<<< HEAD
-<<<<<<< HEAD
-    }
-=======
-<<<<<<< HEAD
-=======
->>>>>>> main
         "mounts": [
             # feature repo
             Mount(
@@ -41,10 +34,3 @@ class DefaultConfig:
             ),
         ],
     }
-=======
-    }
->>>>>>> quandv/fix_bug_materialize
-<<<<<<< HEAD
->>>>>>> main
-=======
->>>>>>> main

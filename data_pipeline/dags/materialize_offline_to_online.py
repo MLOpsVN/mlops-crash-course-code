@@ -22,15 +22,5 @@ with DAG(
     materialize_task = DockerOperator(
         task_id="materialize_task",
         **DefaultConfig.DEFAULT_DOCKER_OPERATOR_ARGS,
-<<<<<<< HEAD
-<<<<<<< HEAD
-        command="/bin/bash -c 'chmod +x ./scripts/feast_helper.sh' && ./scripts/feast_helper.sh",
-    )
-=======
         command="/bin/bash ./scripts/feast_helper.sh materialize",
     )
->>>>>>> main
-=======
-        command="/bin/bash ./scripts/feast_helper.sh materialize",
-    )
->>>>>>> main
