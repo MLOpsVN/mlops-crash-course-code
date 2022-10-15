@@ -11,7 +11,8 @@ pipeline {
             image 'python:3.9' 
             args '-v /var/run/docker.sock:/var/run/docker.sock\
              -v /usr/local/bin/docker:/usr/local/bin/docker\
-             --privileged'
+             --privileged true\
+             --user root'
         } 
     }
 
