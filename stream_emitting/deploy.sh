@@ -11,6 +11,7 @@ usage() {
     echo "Available commands:"
     echo " start                start emiting"
     echo " stop                 stop emiting"
+    echo " teardown             teardown emiting"
 }
 
 if [[ -z "$cmd" ]]; then
