@@ -27,12 +27,19 @@ stop_emit() {
     docker-compose -f docker-compose.yaml down
 }
 
+teardown_emit() {
+    docker-compose -f docker-compose.yaml down --volumes
+}
+
 case $cmd in 
     start)
         start_emit
         ;;
     stop)
         stop_emit
+        ;;
+    teardown)
+        teardown_emit
         ;;
     *)
         echo -n "Unknown command: $cmd"
