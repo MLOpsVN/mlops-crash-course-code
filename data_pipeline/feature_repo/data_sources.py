@@ -1,6 +1,4 @@
-import os
 from datetime import timedelta
-from pathlib import Path
 
 from feast import FileSource, KafkaSource
 from feast.data_format import JsonFormat, ParquetFormat
