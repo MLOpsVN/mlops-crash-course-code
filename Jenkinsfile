@@ -1,41 +1,20 @@
 pipeline {
-    agent { docker { image 'python:3.9' } }
+    agent any # 
 
     stages {
-        stage('build model serving') {
-            when {changeset "model_serving/**" }
-
+        stage('Build') {
             steps {
-                echo 'Building model serving..'
-                sh 'cd model_serving && make build_image'
+                echo 'Building something..'
             }
         }
-
-        stage('test model serving') {
-            when {changeset "model_serving/**" }
-
+        stage('Test') {
             steps {
-                echo 'Testing model serving..' // (1)
+                echo 'Testing something..'
             }
         }
-
-        stage('deploy model serving') {
-            parallel { // (2)
-                stage('batch serving pipeline') {
-                    when {changeset "model_serving/**" }
-
-                    steps {
-                        sh 'cd model_serving && make deploy_dags'
-                    }
-                }
-
-                stage('online serving API') {
-                    when {changeset "model_serving/**" }
-
-                    steps {
-                        sh 'cd model_serving && make compose_up'
-                    }
-                }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying something..'
             }
         }
     }
