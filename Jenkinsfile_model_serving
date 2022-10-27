@@ -15,12 +15,12 @@ pipeline {
             when {changeset "model_serving/**" }
 
             steps {
-                echo 'Testing model serving..' // (1)
+                echo 'Testing model serving..'
             }
         }
 
         stage('deploy model serving') {
-            parallel { // (2)
+            parallel {
                 stage('batch serving pipeline') {
                     when {changeset "model_serving/**" }
 
