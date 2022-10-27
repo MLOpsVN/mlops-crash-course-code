@@ -1,4 +1,4 @@
-FROM python:3.8-slim AS build
+FROM python:3.8-buster AS build
 
 RUN apt-get update
 
@@ -8,7 +8,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 COPY deployment/requirements.txt .
 RUN pip install -r requirements.txt
 
-FROM python:3.8-slim
+FROM python:3.8-buster
 
 COPY --from=build /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
