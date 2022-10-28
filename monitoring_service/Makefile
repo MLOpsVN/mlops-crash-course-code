@@ -18,7 +18,7 @@ build_push_image:
 	source ${ENV_FILE} && bash deployment/deploy.sh build_push
 
 compose_up:
-	docker-compose -f ./deployment/docker-compose.yml up -d
+	source ${ENV_FILE} && bash deployment/deploy.sh compose_up
 
 compose_down:
-	docker-compose -f ./deployment/docker-compose.yml down
+	source ${ENV_FILE} && bash deployment/deploy.sh compose_down

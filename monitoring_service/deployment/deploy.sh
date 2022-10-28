@@ -19,6 +19,8 @@ usage() {
     echo " build                build image"
     echo " push                 push image"
     echo " build_push           build and push image"
+    echo " compose_up           up docker compose"
+    echo " compose_down         down docker compose"
 }
 
 if [[ -z "$cmd" ]]; then
@@ -37,6 +39,14 @@ push() {
     docker push $DOCKER_USER/$PROJECT/$IMAGE_NAME:latest
 }
 
+compose_up() {
+    docker-compose --env-file ./deployment/.env -f ./deployment/docker-compose.yml up -d
+}
+
+compose_down() {
+    docker-compose --env-file ./deployment/.env -f ./deployment/docker-compose.yml down
+}
+
 shift
 
 case $cmd in
@@ -49,6 +59,12 @@ push)
 build_push)
     build "$@"
     push "$@"
+    ;;
+compose_up)
+    compose_up "$@"
+    ;;
+compose_down)
+    compose_down "$@"
     ;;
 *)
     echo -n "Unknown command: $cmd"

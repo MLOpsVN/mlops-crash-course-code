@@ -4,6 +4,7 @@ RUN apt-get update
 
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
+RUN pip install --upgrade pip
 
 COPY deployment/requirements.txt .
 RUN pip install -r requirements.txt

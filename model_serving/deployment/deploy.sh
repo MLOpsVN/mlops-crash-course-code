@@ -19,6 +19,8 @@ usage() {
     echo " build                build image"
     echo " push                 push image"
     echo " build_push           build and push image"
+    echo " compose_up           up docker compose"
+    echo " compose_down         down docker compose"
     echo " dags                 deploy airflow dags"
     echo "Available arguments:"
     echo " [dags dir]           airflow dags directory, for command dags only"
@@ -38,6 +40,14 @@ build() {
 push() {
     docker push $DOCKER_USER/$PROJECT/$IMAGE_NAME:$IMAGE_TAG
     docker push $DOCKER_USER/$PROJECT/$IMAGE_NAME:latest
+}
+
+compose_up() {
+    docker-compose --env-file ./deployment/.env -f ./deployment/docker-compose.yml up -d
+}
+
+compose_down() {
+    docker-compose --env-file ./deployment/.env -f ./deployment/docker-compose.yml down
 }
 
 deploy_dags() {
@@ -63,6 +73,12 @@ push)
 build_push)
     build "$@"
     push "$@"
+    ;;
+compose_up)
+    compose_up "$@"
+    ;;
+compose_down)
+    compose_down "$@"
     ;;
 dags)
     deploy_dags "$@"
