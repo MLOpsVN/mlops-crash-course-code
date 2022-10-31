@@ -43,10 +43,20 @@ push() {
 }
 
 compose_up() {
+    # escape slash /
+    FEAST_ONLINE_STORE_HOST=$(echo ${FEAST_ONLINE_STORE_HOST} | sed -e "s#/#\\\/#g")
+    # replace value
+    sed -i '' -e s/localhost/${FEAST_ONLINE_STORE_HOST}/ ./feature_repo/feature_store.yaml
+
     docker-compose --env-file ./deployment/.env -f ./deployment/docker-compose.yml up -d
 }
 
 compose_down() {
+    # escape slash /
+    FEAST_ONLINE_STORE_HOST=$(echo ${FEAST_ONLINE_STORE_HOST} | sed -e "s#/#\\\/#g")
+    # replace value
+    sed -i '' -e s/${FEAST_ONLINE_STORE_HOST}/localhost/ ./feature_repo/feature_store.yaml
+
     docker-compose --env-file ./deployment/.env -f ./deployment/docker-compose.yml down
 }
 

@@ -10,4 +10,3 @@ services:
     command: /bin/bash scripts/bentoml_helper.sh serve --port=$ONLINE_SERVING_PORT
     ports:
       - $ONLINE_SERVING_PORT:$ONLINE_SERVING_PORT
-    network_mode: host
