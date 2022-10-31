@@ -10,4 +10,3 @@ services:
     command: python src/monitoring_service.py --port=$MONITORING_SERVICE_PORT
     ports:
       - $MONITORING_SERVICE_PORT:$MONITORING_SERVICE_PORT
-    network_mode: host
