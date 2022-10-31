@@ -15,18 +15,18 @@ from utils import *
 Log(AppConst.BENTOML_SERVICE)
 AppPath()
 pd.set_option("display.max_columns", None)
-
-MONITORING_SERVICE_API = "http://localhost:8309/iterate"
+config = Config()
+Log().log.info(f"config: {config.__dict__}")
 
 
 def save_model() -> bentoml.Model:
     Log().log.info("start save_model")
     # read from .env file registered_model_version.json, get model name, model version
-    config = Config()
 
     registered_model_file = AppPath.ROOT / config.registered_model_file
     Log().log.info(f"registered_model_file: {registered_model_file}")
     registered_model_dict = load_json(registered_model_file)
+    Log().log.info(f"registered_model_dict: {registered_model_dict}")
 
     run_id = registered_model_dict["_run_id"]
     model_name = registered_model_dict["_name"]
@@ -152,7 +152,7 @@ def monitor_request(df: pd.DataFrame):
 
         Log().log.info(f"sending {data}")
         response = requests.post(
-            MONITORING_SERVICE_API,
+            config.monitoring_service_api,
             data=data,
             headers={"content-type": "application/json"},
         )

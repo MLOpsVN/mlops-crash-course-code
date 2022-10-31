@@ -27,7 +27,8 @@ class DefaultConfig:
         "image": f"{AppConst.DOCKER_USER}/mlops_crash_course/training_pipeline:latest",
         "api_version": "auto",
         "auto_remove": True,
-        "network_mode": "host",
+        "network_mode": "bridge",
+        "docker_url": "tcp://docker-proxy:2375",
         "mounts": [
             # feature repo
             Mount(

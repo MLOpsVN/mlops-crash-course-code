@@ -47,6 +47,7 @@ class Config:
         self.mlflow_tracking_uri = os.environ.get("MLFLOW_TRACKING_URI")
         self.batch_input_file = os.environ.get("BATCH_INPUT_FILE")
         self.registered_model_file = os.environ.get("REGISTERED_MODEL_FILE")
+        self.monitoring_service_api = os.environ.get("MONITORING_SERVICE_API")
 
 
 class Log:
