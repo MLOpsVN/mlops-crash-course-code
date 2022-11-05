@@ -10,6 +10,7 @@ AppPath()
 def check_unexpected_features(df: pd.DataFrame):
     Log().log.info("start check_unexpected_features")
     config = Config()
+    Log().log.info(f"config: {config.__dict__}")
     cols = set(df.columns)
     errors = []
     for col in cols:
@@ -23,6 +24,7 @@ def check_unexpected_features(df: pd.DataFrame):
 def check_expected_features(df: pd.DataFrame):
     Log().log.info("start check_expected_features")
     config = Config()
+    Log().log.info(f"config: {config.__dict__}")
     dtypes = dict(df.dtypes)
     errors = []
     for feature in config.feature_dict:

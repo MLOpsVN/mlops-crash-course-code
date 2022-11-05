@@ -12,6 +12,7 @@ def prepare_data(df: pd.DataFrame):
     inspect_curr_dir()
 
     config = Config()
+    Log().log.info(f"config: {config.__dict__}")
     train, test = train_test_split(
         df, test_size=config.test_size, random_state=config.random_seed
     )

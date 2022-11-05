@@ -12,11 +12,13 @@ def batch_prediction():
     inspect_curr_dir()
 
     config = Config()
+    Log().log.info(f"config: {config.__dict__}")
 
     # Download model
     registered_model_file = AppPath.ROOT / config.registered_model_file
     Log().log.info(f"registered_model_file: {registered_model_file}")
     registered_model_dict = load_json(registered_model_file)
+    Log().log.info(registered_model_dict.__dict__)
     model_uri = registered_model_dict["_source"]
 
     mlflow.set_tracking_uri(config.mlflow_tracking_uri)

@@ -26,7 +26,7 @@ def save_model() -> bentoml.Model:
     registered_model_file = AppPath.ROOT / config.registered_model_file
     Log().log.info(f"registered_model_file: {registered_model_file}")
     registered_model_dict = load_json(registered_model_file)
-    Log().log.info(f"registered_model_dict: {registered_model_dict}")
+    Log().log.info(f"registered_model_dict: {registered_model_dict.__dict__}")
 
     run_id = registered_model_dict["_run_id"]
     model_name = registered_model_dict["_name"]
@@ -66,7 +66,7 @@ def save_model() -> bentoml.Model:
             "feature_list": feature_list,
         },
     )
-    Log().log.info(bentoml_model)
+    Log().log.info(bentoml_model.__dict__)
     return bentoml_model
 
 

@@ -42,6 +42,7 @@ def train_model():
 
     # Setup tracking server
     config = Config()
+    Log().log.info(f"config: {config.__dict__}")
     mlflow.set_tracking_uri(config.mlflow_tracking_uri)
     mlflow.set_experiment(config.experiment_name)
     Log().log.info((mlflow.get_tracking_uri(), mlflow.get_artifact_uri()))

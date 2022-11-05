@@ -10,10 +10,11 @@ def validate_model():
     inspect_curr_dir()
 
     eval_result = EvaluationResult.load(AppPath.EVALUATION_RESULT)
-    Log().log.info(f"loaded eval_result {eval_result}")
+    Log().log.info(f"loaded eval_result {eval_result.__dict__}")
 
     errors = []
     config = Config()
+    Log().log.info(f"config: {config.__dict__}")
     if eval_result.rmse > config.rmse_threshold:
         errors.append(
             f"rmse result {eval_result.rmse} exceeds threshold {config.rmse_threshold}"
@@ -29,7 +30,7 @@ def validate_model():
 
     Log().log.info(f"Model validation succeeds, registering model")
     run_info = RunInfo.load(AppPath.RUN_INFO)
-    Log().log.info(f"loaded run_info {run_info}")
+    Log().log.info(f"loaded run_info {run_info.__dict__}")
 
     mlflow.set_tracking_uri(config.mlflow_tracking_uri)
     result = mlflow.register_model(

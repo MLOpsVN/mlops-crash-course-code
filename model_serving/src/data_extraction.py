@@ -11,6 +11,7 @@ def extract_data():
     Log().log.info("start extract_data")
     inspect_curr_dir()
     config = Config()
+    Log().log.info(f"config: {config.__dict__}")
 
     # Connect to your feature store provider
     inspect_dir(AppPath.DATA_SOURCES)

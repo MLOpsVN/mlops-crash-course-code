@@ -20,15 +20,16 @@ def evaluate_model():
     inspect_curr_dir()
 
     run_info = RunInfo.load(AppPath.RUN_INFO)
-    Log().log.info(f"loaded run_info {run_info}")
+    Log().log.info(f"loaded run_info {run_info.__dict__}")
 
     config = Config()
+    Log().log.info(f"config: {config.__dict__}")
     mlflow.set_tracking_uri(config.mlflow_tracking_uri)
 
     model = mlflow.pyfunc.load_model(
         f"runs:/{run_info.run_id}/{AppConst.MLFLOW_MODEL_PATH_PREFIX}"
     )
-    Log().log.info(f"loaded model {model}")
+    Log().log.info(f"loaded model {model.__dict__}")
 
     test_x = load_df(AppPath.TEST_X_PQ)
     test_y = load_df(AppPath.TEST_Y_PQ)
