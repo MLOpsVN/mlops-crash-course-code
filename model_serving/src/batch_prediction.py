@@ -18,7 +18,7 @@ def batch_prediction():
     registered_model_file = AppPath.ROOT / config.registered_model_file
     Log().log.info(f"registered_model_file: {registered_model_file}")
     registered_model_dict = load_json(registered_model_file)
-    Log().log.info(registered_model_dict.__dict__)
+    Log().log.info(registered_model_dict)
     model_uri = registered_model_dict["_source"]
 
     mlflow.set_tracking_uri(config.mlflow_tracking_uri)
