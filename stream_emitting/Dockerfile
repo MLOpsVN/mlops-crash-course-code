@@ -1,4 +1,4 @@
-FROM python:3.8-slim
+FROM python:3.9-slim
 
 # copy code, data and dependencies
 COPY stream_emitting.py stream_emitting.py
