@@ -1,7 +1,6 @@
 import pandas as pd
 import os
 
-from feast.infra.contrib.stream_processor import ProcessorConfig
 from feast.infra.contrib.spark_kafka_processor import SparkProcessorConfig
 from feast.infra.contrib.stream_processor import get_stream_processor_object
 from feast import FeatureStore
