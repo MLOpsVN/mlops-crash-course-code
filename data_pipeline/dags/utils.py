@@ -33,4 +33,7 @@ class DefaultConfig:
                 type="bind",
             ),
         ],
+        # Fix a permission denied when using DockerOperator in Airflow
+        # Ref: https://stackoverflow.com/a/70100729
+        # "docker_url": "tcp://docker-proxy:2375",
     }
